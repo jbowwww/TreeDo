@@ -49,34 +49,41 @@ export const Item = ({
     handleSelect
 }: ItemProps) => (
     <>
-        <div
-            style={itemStyle({ selected: selected })}
-            onClick={makeHandleClick(handleSelect, { title, description, index, path, subItems })}
-        >
-            <span>{title}</span>
-            <span>
-                <button
-                    style={buttonStyle}
-                    onClick={() => {
-                        if (dispatch !== undefined)
-                            dispatch({ type: "ADD", path });
-                    }}>
-                    +
-                </button>
-            </span>
+        <div>
+            <div
+                style={itemStyle({ selected: selected })}
+                onClick={makeHandleClick(handleSelect, { title, description, index, path, subItems })}
+            >
+                <div>
+                    <span>{title}</span>
+                    <span style={{ float: "right", }}>
+                        <button
+                            style={buttonStyle}
+                            onClick={() => {
+                                if (dispatch !== undefined)
+                                    dispatch({ type: "ADD", path });
+                            }}>
+                            +
+                        </button>
+                    </span>
+                </div>
+                <div style={{ background: "rgb(64, 64, 64)", borderRadius: "6px", marginTop: "5px", padding: "4px", fontSize: "0.75em", }}>{description}</div>
+            </div>
         </div>
-        <div>{description}</div>
     </>
 );
 
 export default Item;
 
 const buttonStyle = {
-    width: "1em",
-    height: "1em",
+    width: "2.2em",
+    height: "1.6em",
 };
 
 const itemStyle = ({ selected }: { selected: boolean }) => ({
-    background: selected ? "yellow" : "rgb(6,14,6)",
+    background: selected ? "rgb(128, 128, 64)" : "rgb(6,14,6)",
     border: "1px solid grey",
+    borderRadius: "10px",
+    padding: "0.2em 0.4em 0.52em",
+    margin: "0.8em",
 });
