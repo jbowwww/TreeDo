@@ -26,32 +26,14 @@ export const App = () => {
 };
 
 const items = [{
-    title: "Item 1",
-    description: "Description 1",
-    subItems: [{
-        title: "Item 1.1",
-        description: "Description 1.1",
-    }, {
-        title: "Item 1.2",
-        description: "Description 1.2",
-    }]
-}, {
-    title: "Item 2",
-    description: "Description 2",
-    subItems: [{
-        title: "Item 2.1",
-        description: "Description 2.1",
-    }, {
-        title: "Item 2.2",
-        description: "Description 2.2",
-    }]
-}, {
-    title: "Item 3",
-    description: "Description 3",
-}, {
-    title: "Item 4",
-    description: "Description 4",
-}];
+    title: "Item 1", description: "Description 1", subItems: [{
+        title: "Item 1.1", description: "Description 1.1", }, {
+        title: "Item 1.2", description: "Description 1.2", }] }, {
+    title: "Item 2", description: "Description 2", subItems: [{
+        title: "Item 2.1", description: "Description 2.1", }, {
+        title: "Item 2.2", description: "Description 2.2", }] }, {
+    title: "Item 3", description: "Description 3", }, {
+    title: "Item 4", description: "Description 4", }];
 
 export const appStyle = {
     display: "grid",
