@@ -1,19 +1,23 @@
+import { useState } from 'react';
 import Column from './Column';
-import { ItemProps } from './Item';
+import { ItemDataProps, ItemProps } from './Item';
 import { useTreedoReducer } from './useTreedoReducer';
 
 export const App = () => {
     const [itemsState, itemsDispatch] = useTreedoReducer(items);
+    const [itemsStateColumnTwo, setItemsStateColumnTwo] = useState<ItemDataProps[]>([]);
 
     const makeHandleColumnItemSelect = (columnIndex: number) => (args: ItemProps): void => {
         console.debug('App.handleColumnItemSelect', 'columnIndex', columnIndex, 'args', args);
+        if (columnIndex === 0)
+            setItemsStateColumnTwo(args.subItems);
     };
 
     return (
         <div style={appStyle}>
             {/*<TreedoContext.Provider value={{ state: itemsState, dispatch: itemsDispatch }} >*/}
             <Column items={itemsState} dispatch={itemsDispatch} handleSelect={makeHandleColumnItemSelect(0)} />
-            <Column items={[]} dispatch={itemsDispatch} />
+            <Column items={itemsStateColumnTwo} dispatch={itemsDispatch} />
             <Column items={[]} dispatch={itemsDispatch} />
             {/*</TreedoContext.Provider>*/}
         </div>

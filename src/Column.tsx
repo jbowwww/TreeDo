@@ -16,9 +16,20 @@ const Column = ({ items = [], dispatch = () => { }, handleSelect }: ColumnProps)
             handleSelect(args);
     };
 
-    return (<div>{items.map((item, index) => (
-        <Item {...item} key={index} index={index} path={[index]} selected={selectedItem?.path[0] === index} dispatch={dispatch} handleSelect={innerHandleSelect} />
-    ))}</div>);         // selected={selectedItem?.path.every((pathIndex, index) == [index]}
+    return (
+        <div>
+            {items.map((item, index) => (
+                <Item
+                    {...item}
+                    key={index}
+                    index={index}
+                    path={[index]}
+                    selected={selectedItem?.path[0] === index}
+                    dispatch={dispatch}
+                    handleSelect={innerHandleSelect} />
+            ))}
+        </div>
+    );         // selected={selectedItem?.path.every((pathIndex, index) == [index]}
 };
 
 export default Column;
