@@ -1,32 +1,29 @@
-import { Dispatch, useState } from 'react';
-import { Item, ItemDataProps, ItemProps } from './Item';
+import { useState } from 'react';
+import { Item, ItemDataProps } from './Item';
 
 export interface ColumnProps {
-    items: ItemDataProps[];
-    dispatch: Dispatch<any>;
-    handleSelect?: (args: ItemProps) => void;
+    items?: ItemDataProps[];
+    path?: number[];
+    onSelectItem?: (item: ItemDataProps, index: number) => void;
 }
 
-const Column = ({ items = [], dispatch = () => { }, handleSelect }: ColumnProps) => {
-    const [selectedItem, setSelectedItem] = useState<ItemProps | undefined>(undefined);
-
-    const innerHandleSelect = (args: ItemProps): void => {
-        setSelectedItem(args);
-        if (handleSelect !== undefined)
-            handleSelect(args);
+const Column = ({ items, path = [], onSelectItem }: ColumnProps) => {
+    const [selectedIndex, setSelectedIndex] = useState<number>();
+    const handleSelectItem = (index: number, item: ItemDataProps) => {
+        setSelectedIndex(index);
+        onSelectItem?.(item, index);
     };
 
     return (
         <div>
-            {items.map((item, index) => (
+            {path && items && items.map((item, index) => (
                 <Item
                     {...item}
                     key={index}
                     index={index}
-                    path={[index]}
-                    selected={selectedItem?.path[0] === index}
-                    dispatch={dispatch}
-                    handleSelect={innerHandleSelect} />
+                    path={[...path, index]}
+                    selected={selectedIndex === index}
+                    onSelect={item => handleSelectItem(index, item)} />
             ))}
         </div>
     );         // selected={selectedItem?.path.every((pathIndex, index) == [index]}
