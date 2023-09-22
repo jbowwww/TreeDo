@@ -110,19 +110,27 @@ export const treeNodeUpdate = (
     path: number[],
     nodeReplacer: (node: TreeNodeDataProps) => TreeNodeDataProps,
     traversalPath: number[] = []
-): TreeNodeDataProps => (!isPathWithin(traversalPath, path) ? node :
-    traversalPath.length === path.length ?
-        nodeReplacer(node) : {
-            ...node,
-            subItems: node.subItems.map((subNode, subNodeIndex) =>
-                treeNodeUpdate(
-                    subNode,
-                    path,
-                    nodeReplacer,
-                    [...traversalPath, subNodeIndex]
+): TreeNodeDataProps => (
+    // don't clone nodes that aren't within our selection path, just keep as is
+    !isPathWithin(traversalPath, path) ? node :
+        // but the node that is being updated (specified by path), or any of it's parents,
+        // should be cloned for the new state (otherwise react can end up redrawing because
+        // the existing state is being modified, and that state is being passed as props to components)
+    new TreeNodeData(
+        traversalPath.length === path.length ?
+            nodeReplacer(node) : {
+                ...node,
+                subItems: node.subItems.map((subNode, subNodeIndex) =>
+                    treeNodeUpdate(
+                        subNode,
+                        path,
+                        nodeReplacer,
+                        [...traversalPath, subNodeIndex]
+                    )
                 )
-            )
-        });
+            }
+        )
+    );
 
 // The reducer
 export const treeReducer = (
