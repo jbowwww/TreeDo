@@ -1,13 +1,8 @@
 import { Dispatch, ReactNode, createContext, useContext, useReducer } from 'react';
-import { ItemDataProps } from './Item';
+import { TreeNodeData, TreeNodeDataProps, TreeSparseNodeProps } from './TreeNode';
 
-// The tree state (TODO: Move ItemDataProps here & rename?)
-export type TreeState = ItemDataProps[];     // top level of items in the tree
-export type TreeSparseNodeProps = Partial<ItemDataProps>;
+export type TreeState = TreeNodeDataProps[];
 export type TreeSparseState = TreeSparseNodeProps[];
-    // This allows initial state arguments passed to useTreedoReducer to be sparsely written,
-    // i.e. if an item doesn't have subItems, just omit subItems. The tree reducer initialiser
-    // will shimmy it into valid data as used by the tree.
 
 // Available operations on the tree
 export const TreeDispatchActions = {
@@ -37,20 +32,24 @@ export const getTreeDispatch = (dispatch: Dispatch<any>): TreeDispatch => ({
     remove: makeDispatchUnsupportedOperation('remove'),
 });
 
-// The tree state context
+// The tree state context, tree dispatch context, and a combined useTreeContext
+// These will only get valid values if cliwnt code has used TreeProvider,
+// or manually set up TreeContext.Provider or TreeDispatchContext.Provider
 export const TreeContext = createContext<TreeState | null>(null);
 export const useTreeState = () => useContext(TreeContext);
 
-// The tree dispatch context
 export const TreeDispatchContext = createContext<TreeDispatch | null>(null);
 export const useTreeDispatch = () => useContext(TreeDispatchContext)
 
-// components can call this to receive ([state: TreeState, dispatch: TreeDispatch])
 export const useTreeContext = (): [TreeState | null, TreeDispatch | null] =>
-    //([useContext(TreeContext), useContext(TreeDispatchContext)]);
     ([useTreeState(), useTreeDispatch()]);
 
-export const useTree = (initialState: TreeState = []): [TreeState, TreeDispatch] => {
+// The tree state is actually created here with the reducer
+export const useTreeReducer = (initialState: TreeSparseState) =>
+    useReducer(treeReducer, initialState, state => state.map(node => new TreeNodeData(node)));
+
+// The tree reducer, state, and dispatch objects are created here
+export const useTree = (initialState: TreeSparseState = []): [TreeState, TreeDispatch] => {
     const [state, rawDispatch] = useTreeReducer(initialState);
     const dispatch = getTreeDispatch(rawDispatch);
     return [state, dispatch];
@@ -64,7 +63,7 @@ export const TreeProvider = ({
     initialState: TreeSparseState,
     children?: ReactNode,
 }) => {
-    const [state, dispatch] = useTree(treeInit(initialState));
+    const [state, dispatch] = useTree(initialState);
     return (
         <TreeContext.Provider value={state}>
             <TreeDispatchContext.Provider value={dispatch}>
@@ -74,57 +73,57 @@ export const TreeProvider = ({
     );
 };
 
-// Init's a tree aka node list from a Partial<ItemDataProps>[], applying defaults to node props where required.
+// Init's a tree aka node list from a Partial<TreeNodeProps>[], applying defaults to node props where required.
 // Also doubles as a tree clone function
-export const treeInit = (state: TreeSparseState): TreeState =>
-    state.map(treeNodeInit);
+//export const treeInit = (state: TreeSparseState): TreeState => state.map(treeNodeInit);
 
-// Init's a tree node from a Partial<ItemDataProps>, applying defaults where required.
+// Init's a tree node from a Partial<TreeNodeProps>, applying defaults where required.
 // Also doubles as a node clone function
-export const treeNodeInit = (node: Partial<ItemDataProps>): ItemDataProps => ({
-    title: node?.title,
-    description: node?.description,
-    subItems: node?.subItems?.map(treeNodeInit) ?? [],
-});
+//export const treeNodeInit = (node: Partial<TreeNodeProps>): TreeNodeProps => ({
+//    title: node?.title,
+//    description: node?.description,
+//    subItems: node?.subItems?.map(treeNodeInit) ?? [],
+//});
 
 // Returns a tree node, given a Tree (TreeState) and a path
 export const getTreeByPath = (
     state: TreeState,
     path: number[],
-): ItemDataProps | undefined => {
-    let item: ItemDataProps | undefined = undefined;
+): TreeNodeDataProps | undefined => {
+    let item: TreeNodeDataProps | undefined = undefined;
     for (const index of path)
         item = item ? item.subItems[index] : state[index];
     return item;
 };
 
+export const isPathWithin = (path1: number[], path2: number[]) =>
+    path1.every((pathIndex, pathIndexIndex) => path2[pathIndexIndex] === pathIndex);
+
 export const treeUpdate = (
     tree: TreeState,
     path: number[],
-    nodeReplacer: (node: ItemDataProps) => ItemDataProps,
+    nodeReplacer: (node: TreeNodeDataProps) => TreeNodeDataProps,
 ) => tree.map((node, nodeIndex) => treeNodeUpdate(node, path, nodeReplacer, [ nodeIndex ]));
 
 export const treeNodeUpdate = (
-    node: ItemDataProps,
+    node: TreeNodeDataProps,
     path: number[],
-    nodeReplacer: (node: ItemDataProps) => ItemDataProps,
+    nodeReplacer: (node: TreeNodeDataProps) => TreeNodeDataProps,
     traversalPath: number[] = []
-): ItemDataProps => (
-    traversalPath.every((pathIndex, pathIndexIndex) => path[pathIndexIndex] === pathIndex) ?
-        (traversalPath.length === path.length ?
-            nodeReplacer(node)
-            : {
-                ...node,
-                subItems: node.subItems.map((subNode, subNodeIndex) =>
-                    treeNodeUpdate(subNode, path, nodeReplacer, [...traversalPath, subNodeIndex]))
-            }
-        )
-        : node
-);
+): TreeNodeDataProps => (!isPathWithin(traversalPath, path) ? node :
+    traversalPath.length === path.length ?
+        nodeReplacer(node) : {
+            ...node,
+            subItems: node.subItems.map((subNode, subNodeIndex) =>
+                treeNodeUpdate(
+                    subNode,
+                    path,
+                    nodeReplacer,
+                    [...traversalPath, subNodeIndex]
+                )
+            )
+        });
 
-export const useTreeReducer = (initialState: TreeSparseState) =>
-    useReducer(treeReducer, initialState, treeInit);
-    
 // The reducer
 export const treeReducer = (
     state: TreeState,
@@ -137,7 +136,7 @@ export const treeReducer = (
         state,
         action.path,
         action.type === 'CLEAR' ? node => ({ ...node, subItems: [] }) :
-        action.type === 'ADD' ? node => ({ ...node, subItems: [...node.subItems, treeNodeInit(action.newNode)] }) :
+        action.type === 'ADD' ? node => ({ ...node, subItems: [...node.subItems, new TreeNodeData(action.newNode)] }) :
         action.type === 'REMOVE' ? node => ({ ...node, subItems: node.subItems.splice(action.index, 1) }) :
                     () => { throw new Error(`Unknown treeReducer action.type='${action.type}', action=${action}`); }
     );

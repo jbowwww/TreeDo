@@ -1,34 +1,38 @@
 import { useState } from "react";
-import { Dispatch } from "react";
 import { useTreeDispatch } from "./TreeContext";
 
-export interface ItemSizeProps {
-    sizeEstimate: number;
-    sizeActual?: number;
-};
-
-export interface ItemProgressProps {
-    completed: number;
-    remaining: number;
-};
-
-export interface ItemDataProps {
+export interface TreeNodeDataProps {
     title?: string;
     description?: string;
-    subItems: ItemDataProps[];
+    subItems: TreeNodeDataProps[];
 };
+export type TreeSparseNodeProps = Partial<TreeNodeDataProps>;
 
-export interface ItemRenderProps {
+// This is a concrete implementation of a TreeNode that implements TreeNodeProps,
+// but can be initialised using only TreeSparseNodeProps.
+// This simply allows for terser definitions of tree node state data. (see App.ts)
+// A completely empty tree node can be created with no title, or subItems (or just some of these).
+export class TreeNodeData implements TreeNodeDataProps {
+    title?: string;
+    description?: string;
+    subItems: TreeNodeDataProps[];
+    constructor(props: TreeSparseNodeProps = {}) {
+        this.title = props.title;
+        this.description = props.description;
+        this.subItems = props.subItems?.map(node => new TreeNodeData(node)) ?? [];
+    }
+}
+
+export interface TreeNodeRenderProps {
     index: number;
     path: number[];
     selected?: boolean;
-    dispatch?: Dispatch<any>;
-    onSelect?: (args: ItemProps) => void;
+    onSelect?: (args: TreeNodeProps) => void;
 };
 
-export type ItemProps = ItemDataProps & ItemRenderProps;
+export type TreeNodeProps = TreeNodeDataProps & TreeNodeRenderProps;
 
-export const Item = (props: ItemProps) => {
+export const TreeNode = (props: TreeNodeProps) => {
     const [displayAddItemIcon, setDisplayAddItemIcon] = useState(false);
     const toggleDisplayAddItemIcon = (value?: boolean) => setDisplayAddItemIcon(prev => value ?? !prev);
     const treeDispatch = useTreeDispatch();
@@ -70,7 +74,7 @@ export const Item = (props: ItemProps) => {
     </div>);
 };
 
-export default Item;
+export default TreeNode;
 
 const buttonStyle = {
     width: "2.2em",

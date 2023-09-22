@@ -1,13 +1,13 @@
 import { useState } from 'react';
 import Column from './Column';
 import { TreeDispatchContext, getTreeByPath, useTree } from './TreeContext';
-//import { ItemDataProps } from './Item';
+//import { TreeNodeProps } from './Item';
 
 export const App = () => {
     const [treeState, treeDispatch] = useTree(items);
-    //const [column2Items, setColumn2Items] = useState <ItemDataProps[]>();
+    //const [column2Items, setColumn2Items] = useState <TreeNodeProps[]>();
     const [column2Path, setColumn2Path] = useState<number[]>();
-    //const [column3Items, setColumn3Items] = useState<ItemDataProps[]>();
+    //const [column3Items, setColumn3Items] = useState<TreeNodeProps[]>();
     const [column3Path, setColumn3Path] = useState<number[]>();
 
     return (

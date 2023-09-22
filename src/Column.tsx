@@ -1,15 +1,15 @@
 import { useState } from 'react';
-import { Item, ItemDataProps } from './Item';
+import { TreeNode, TreeNodeDataProps } from './TreeNode';
 
 export interface ColumnProps {
-    items?: ItemDataProps[];
+    items?: TreeNodeDataProps[];
     path?: number[];
-    onSelectItem?: (item: ItemDataProps, index: number) => void;
+    onSelectItem?: (item: TreeNodeDataProps, index: number) => void;
 }
 
 const Column = ({ items, path = [], onSelectItem }: ColumnProps) => {
     const [selectedIndex, setSelectedIndex] = useState<number>();
-    const handleSelectItem = (index: number, item: ItemDataProps) => {
+    const handleSelectItem = (index: number, item: TreeNodeDataProps) => {
         setSelectedIndex(index);
         onSelectItem?.(item, index);
     };
@@ -17,7 +17,7 @@ const Column = ({ items, path = [], onSelectItem }: ColumnProps) => {
     return (
         <div>
             {path && items && items.map((item, index) => (
-                <Item
+                <TreeNode
                     {...item}
                     key={index}
                     index={index}
