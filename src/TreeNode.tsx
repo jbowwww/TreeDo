@@ -1,26 +1,10 @@
 import { useState } from "react";
-import { useTreeDispatch } from "./TreeContext";
+import { useTreeDispatchContext } from "./TreeContext";
 
-export interface TreeNodeDataProps {
+export interface TreeNodeProps {
     title?: string;
     description?: string;
-    subItems: TreeNodeDataProps[];
-};
-export type TreeSparseNodeProps = Partial<TreeNodeDataProps>;
-
-// This is a concrete implementation of a TreeNode that implements TreeNodeProps,
-// but can be initialised using only TreeSparseNodeProps.
-// This simply allows for terser definitions of tree node state data. (see App.ts)
-// A completely empty tree node can be created with no title, or subItems (or just some of these).
-export class TreeNodeData implements TreeNodeDataProps {
-    title?: string;
-    description?: string;
-    subItems: TreeNodeDataProps[];
-    constructor(props: TreeSparseNodeProps = {}) {
-        this.title = props.title;
-        this.description = props.description;
-        this.subItems = props.subItems?.map(node => new TreeNodeData(node)) ?? [];
-    }
+    nodes?: TreeNodeProps[];
 }
 
 export interface TreeNodeRenderProps {
@@ -30,12 +14,10 @@ export interface TreeNodeRenderProps {
     onSelect?: (args: TreeNodeProps) => void;
 };
 
-export type TreeNodeProps = TreeNodeDataProps & TreeNodeRenderProps;
-
-export const TreeNode = (props: TreeNodeProps) => {
+export const TreeNode = (props: TreeNodeProps & TreeNodeRenderProps) => {
     const [displayAddItemIcon, setDisplayAddItemIcon] = useState(false);
     const toggleDisplayAddItemIcon = (value?: boolean) => setDisplayAddItemIcon(prev => value ?? !prev);
-    const treeDispatch = useTreeDispatch();
+    const treeDispatch = useTreeDispatchContext();
 
     const handleItemClick = () => {
         props.onSelect?.(props);
@@ -59,7 +41,7 @@ export const TreeNode = (props: TreeNodeProps) => {
                         onMouseOut={() => toggleDisplayAddItemIcon(false)}
                     >
                         <div style={addItemIconStyle({ displayAddItemIcon: !displayAddItemIcon }) }>
-                            {props.subItems.length}
+                            {props.nodes?.length ?? "-"}
                         </div>
                         <div style={addItemIconStyle({ displayAddItemIcon: displayAddItemIcon }) }>
                             +
