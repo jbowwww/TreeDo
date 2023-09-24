@@ -1,5 +1,5 @@
 import { ReactNode, createContext, useContext } from 'react';
-import { TreeDispatch, TreeState } from './Tree';
+import { TreeDispatch, TreeState } from './TreeState';
     
 // The tree state context, tree dispatch context, and a combined useTreeContext
 // These will only get valid values if cliwnt code has used TreeProvider,

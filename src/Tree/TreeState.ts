@@ -23,11 +23,12 @@ export class TreeState {
         return new TreeState(
             (function nodesVisitor(relativePath: number[], nodes?: TreeNodeProps[]): TreeNodeProps[] | undefined {
                 return nodes?.map((subNode, subNodeIndex) =>
-                    subNodeIndex === relativePath.shift() ? // match next part of relativePath? node to update is somewhere beneath here
-                        relativePath.length === 0 ?         // was that the last path part?
+                    subNodeIndex === relativePath[0] ? // match next part of relativePath? node to update is somewhere beneath here
+                        relativePath.length === 1 ?         // was that the last path part?
                             nodeUpdater(subNode)            //  yes - update this node
-                            : { ...subNode, nodes: nodesVisitor(relativePath, subNode.nodes) } // no - copy the node and visit it's child nodes
-                        : subNode);
+                            : { ...subNode, nodes: nodesVisitor(relativePath.slice(1), subNode.nodes) } // no - copy the node and visit it's child nodes
+                        : subNode)
+                    ?? [];
             })(path, this.nodes)                            // this node not in the update path, use existing copy (!! confirm this is OK!)
         );
     }
@@ -40,7 +41,7 @@ const throwInvalidDispatch = (name: string, ...args: any) => {
 // Defines methods for tree dispatch operations, instead of manually creating the underlying POJO objects
 export class TreeDispatch {
     constructor(public dispatch: Dispatch<any>) { }
-    add(path: number[], node: TreeNodeProps) { this.dispatch({ type: 'ADD', path, node }); }
+    add(path: number[], newNode: TreeNodeProps) { this.dispatch({ type: 'ADD', path, newNode }); }
     clear(path: number[]) { throwInvalidDispatch('CLEAR', { path }); }
     remove(path: number[]) { throwInvalidDispatch('REMOVE', { path }); }
 };
