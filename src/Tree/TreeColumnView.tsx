@@ -1,5 +1,5 @@
 ﻿import { useState } from 'react';
-import Column from './Column';
+import Column from './TreeColumn';
 import { TreeNodeProps } from './TreeNode';
 
 export interface TreeColumnViewProps {
