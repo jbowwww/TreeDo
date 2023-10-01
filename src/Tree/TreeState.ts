@@ -1,74 +1,34 @@
-﻿import { Dispatch, useReducer } from "react";
+﻿import { useReducer } from "react";
 import { TreeNodeProps } from "./TreeNode";
-
-// The tree state is actually created here with the reducer
-export const useTreeReducer = (initialState: TreeState) => useReducer(treeReducer, initialState);
+import { TreeDispatch, treeReducer } from "./TreeDispatch";
 
 // The tree reducer, state, and dispatch objects are created here
 export const useTree = (initialState: TreeNodeProps[]): [TreeState, TreeDispatch] => {
     const [/*rawS*/state, rawDispatch] = useTreeReducer(new TreeState(initialState));
-    //const state = new TreeState(rawState);
     const dispatch = new TreeDispatch(rawDispatch);
     return [state, dispatch];
 };
 
+// The tree state is actually created here with the reducer
+export const useTreeReducer = (initialState: TreeState) => useReducer(treeReducer, initialState);
+
 export class TreeState {
     constructor(public readonly nodes: Array<TreeNodeProps> = []) { }
 
-    getNodeByPath(path: number[]) {
+    getNode(path: number[]) {
         return path.reduce<TreeNodeProps>((acc, pathPart) => acc.nodes?.[pathPart] ?? {}, { nodes: this.nodes });
     }
 
     updateNode(path: number[], nodeUpdater: (node: TreeNodeProps) => TreeNodeProps) {
-        return new TreeState(
-            (function nodesVisitor(relativePath: number[], nodes?: TreeNodeProps[]): TreeNodeProps[] | undefined {
-                return nodes?.map((subNode, subNodeIndex) =>
-                    subNodeIndex === relativePath[0] ? // match next part of relativePath? node to update is somewhere beneath here
-                        relativePath.length === 1 ?         // was that the last path part?
-                            nodeUpdater(subNode)            //  yes - update this node
-                            : { ...subNode, nodes: nodesVisitor(relativePath.slice(1), subNode.nodes) } // no - copy the node and visit it's child nodes
-                        : subNode)
-                    ?? [];
-            })(path, this.nodes)                            // this node not in the update path, use existing copy (!! confirm this is OK!)
-        );
+        return new TreeState((function nodesVisitor(relativePath: number[], nodes?: TreeNodeProps[]): TreeNodeProps[] | undefined {
+            return nodes?.map((subNode, subNodeIndex) => subNodeIndex === relativePath?.[0] ? relativePath.length === 1 ?
+                    nodeUpdater(subNode) : { ...subNode, nodes: nodesVisitor(relativePath.slice(1), subNode.nodes) } : subNode) ?? [];
+        })(path, this.nodes));
     }
-};
 
-const throwInvalidDispatch = (name: string, ...args: any) => {
-    throw new Error(`TreeDispatch: Operation not supported: ${name}(${args})`);
-};
-
-// Defines methods for tree dispatch operations, instead of manually creating the underlying POJO objects
-export class TreeDispatch {
-    constructor(public dispatch: Dispatch<any>) { }
-    add(path: number[], newNode: TreeNodeProps) { this.dispatch({ type: 'ADD', path, newNode }); }
-    clear(path: number[]) { throwInvalidDispatch('CLEAR', { path }); }
-    remove(path: number[]) { throwInvalidDispatch('REMOVE', { path }); }
-    update(path: number[], node: TreeNodeProps) { this.dispatch({ type: 'UPDATE', path, node }); }
-};
-
-// The reducer
-export const treeReducer = (
-    state: TreeState,
-    action: {
-        type: 'ADD',
-        path: number[],
-        newNode: TreeNodeProps,
-    } | {
-        type: 'CLEAR' | 'REMOVE',
-        path: number[],
-    } | {
-        type: 'UPDATE',
-        path: number[],
-        node: TreeNodeProps,
+    toJSON(/*options: any*/) {
+        const jsonData = JSON.stringify(this.nodes);
+        window.document.textContent = jsonData;
+        //const jsonFile = jsonData, "tree.json", { endings: "transparent", type: "text/json" });\
     }
-) => {
-    const newState = state.updateNode(action.path,
-        action.type === 'CLEAR'     ? node => ({ ...node, nodes: [] }) :
-        action.type === 'ADD'       ? node => ({ ...node, nodes: [...(node.nodes ?? []), action.newNode] }) :
-        action.type === 'REMOVE'    ? node => (node) : // ({ ...node, nodes: node.nodes?.splice(action.index, 1) }) :
-        action.type === 'UPDATE'    ? () => action.node :
-            () => throwInvalidDispatch(action.type, action));
-    console.debug('treeReducer', 'action', action, 'state', state, 'newState', newState);
-    return newState;
 };

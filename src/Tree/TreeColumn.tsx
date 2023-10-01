@@ -9,7 +9,7 @@ export interface ColumnProps {
 
 const Column = ({ path, selectedIndex, onSelectItem }: ColumnProps) => {
     const [treeState,] = useTreeContext();
-    const items = path ? treeState?.getNodeByPath(path).nodes : undefined;
+    const items = path ? treeState?.getNode(path).nodes : undefined;
     const handleSelectItem = (index: number, item: TreeNodeProps) => {
         onSelectItem?.(item, index);
     };
