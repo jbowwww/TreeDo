@@ -1,4 +1,4 @@
-import { useState, ChangeEvent, useEffect, useRef, CSSProperties } from 'react';
+import { useState, ChangeEvent, useEffect, useRef, CSSProperties, PropsWithChildren } from 'react';
 
 export interface EditableTextProps {
     name: string;
@@ -10,7 +10,7 @@ export interface EditableTextProps {
     onEnded?: (value: string) => void;
 };
 
-export const EditableText = (props: EditableTextProps & { style?: CSSProperties }) => {
+export const EditableText = (props: PropsWithChildren<EditableTextProps> & { style?: CSSProperties }) => {
     const [isEditing, setIsEditing] = useState(props.isEditing ?? false);
     const [text, setText] = useState<string | undefined>(props.value);
     const inputRef = useRef<HTMLInputElement>(null);
@@ -41,31 +41,18 @@ export const EditableText = (props: EditableTextProps & { style?: CSSProperties 
         }
     }, [isEditing]);
 
-    const style = props.style ?? { minWidth: "4em", width: "100%" };
-
-    return (
-        <span
-            style={style}
-            onDoubleClick={handleDoubleClick}
-        >
-            {isEditing ? (
-                <input
-                    style={style}
-                    type="text"
-                    name={props.name}
-                    value={text ?? ""}
-                    onChange={handleChange}
-                    onBlur={handleBlur}
-                    onEnded={handleEnded}
-                    ref={inputRef}
-                />
-            ) : (
-                text
-                    ? (<span style={style}>{text}</span>)
-                    : (<span style={style}>&nbsp;</span>)
-            )}
-        </span>
-    );
+    return isEditing ?
+        <input
+            type="text"
+            name={props.name}
+            value={text ?? ""}
+            onChange={handleChange}
+            onBlur={handleBlur}
+            onEnded={handleEnded}
+            ref={inputRef}
+        /> : text ?
+            <span style={props.style} onDoubleClick={handleDoubleClick}>{text}</span>
+          : <span style={props.style} onDoubleClick={handleDoubleClick}>&nbsp;</span>;
 };
 
 export default EditableText;
