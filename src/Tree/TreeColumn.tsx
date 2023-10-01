@@ -16,15 +16,18 @@ const Column = ({ path, selectedIndex, onSelectItem }: ColumnProps) => {
 
     return (
         <div>
-            {path && items && items.map((item, index) => (
-                <TreeNode
+            {path && items && items.map((item, index) => {
+                const newPath = [...path, index];
+                return (
+                    <TreeNode
                     {...item}
-                    key={index}
+                    key={`TN-${newPath.join('-')}`}
                     index={index}
-                    path={[...path, index]}
+                    path={newPath}
                     selected={selectedIndex === index}
-                    onSelect={item => handleSelectItem(index, item)} />
-            ))}
+                        onSelect={item => handleSelectItem(index, item)} />
+                );
+            })}
         </div>
     );
 };

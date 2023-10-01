@@ -44,6 +44,7 @@ export class TreeDispatch {
     add(path: number[], newNode: TreeNodeProps) { this.dispatch({ type: 'ADD', path, newNode }); }
     clear(path: number[]) { throwInvalidDispatch('CLEAR', { path }); }
     remove(path: number[]) { throwInvalidDispatch('REMOVE', { path }); }
+    update(path: number[], node: TreeNodeProps) { this.dispatch({ type: 'UPDATE', path, node }); }
 };
 
 // The reducer
@@ -56,13 +57,18 @@ export const treeReducer = (
     } | {
         type: 'CLEAR' | 'REMOVE',
         path: number[],
+    } | {
+        type: 'UPDATE',
+        path: number[],
+        node: TreeNodeProps,
     }
 ) => {
     const newState = state.updateNode(action.path,
         action.type === 'CLEAR'     ? node => ({ ...node, nodes: [] }) :
         action.type === 'ADD'       ? node => ({ ...node, nodes: [...(node.nodes ?? []), action.newNode] }) :
         action.type === 'REMOVE'    ? node => (node) : // ({ ...node, nodes: node.nodes?.splice(action.index, 1) }) :
-                    () => throwInvalidDispatch(action.type, action));
+        action.type === 'UPDATE'    ? () => action.node :
+            () => throwInvalidDispatch(action.type, action));
     console.debug('treeReducer', 'action', action, 'state', state, 'newState', newState);
     return newState;
 };

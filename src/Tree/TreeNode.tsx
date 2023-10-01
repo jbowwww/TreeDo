@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useTreeDispatchContext } from "./TreeContext";
+import EditableText from "../Common/EditableText";
 
 export interface TreeNodeProps {
     title?: string;
@@ -22,6 +23,12 @@ export const TreeNode = (props: TreeNodeProps & TreeNodeRenderProps) => {
     const handleItemClick = () => {
         props.onSelect?.(props);
     };
+    const handleChangeTitle = (value: string) => {
+        treeDispatch?.update(props.path, { title: value, description: props.description, nodes: props.nodes });
+    };
+    const handleChangeDescription = (value: string) => {
+        treeDispatch?.update(props.path, { title: props.title, description: value, nodes: props.nodes });
+    };
 
     return (<div
         style={itemStyle({ selected: props.selected ?? false })}
@@ -29,21 +36,23 @@ export const TreeNode = (props: TreeNodeProps & TreeNodeRenderProps) => {
     >
         <div>
             <span>
-                {props.title ?? <span>&nbsp;</span>}
+                <span>
+                    <EditableText name="title" style={{ width: "100%" }} value={props.title} onBlur={handleChangeTitle} />
+                </span>
                 <span style={{ float: "right" }}>
                     <button
                         style={buttonStyle}
                         onClick={() => {
-                            treeDispatch?.add(props.path, { });
+                            treeDispatch?.add(props.path, {});
                             props.onSelect?.(props);
                         }}
                         onMouseOver={() => toggleDisplayAddItemIcon(true)}
                         onMouseOut={() => toggleDisplayAddItemIcon(false)}
                     >
-                        <div style={addItemIconStyle({ displayAddItemIcon: !displayAddItemIcon }) }>
+                        <div style={addItemIconStyle({ displayAddItemIcon: !displayAddItemIcon })}>
                             {props.nodes?.length ?? "-"}
                         </div>
-                        <div style={addItemIconStyle({ displayAddItemIcon: displayAddItemIcon }) }>
+                        <div style={addItemIconStyle({ displayAddItemIcon: displayAddItemIcon })}>
                             +
                         </div>
                     </button>
@@ -51,7 +60,7 @@ export const TreeNode = (props: TreeNodeProps & TreeNodeRenderProps) => {
             </span>
         </div>
         <div style={itemDescriptionStyle}>
-            {props.description ?? <span>&nbsp;</span>}
+            <EditableText name="description" value={props.description} onBlur={handleChangeDescription} />
         </div>
     </div>);
 };
