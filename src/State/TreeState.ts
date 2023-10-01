@@ -1,5 +1,5 @@
 ﻿import { useReducer } from "react";
-import { TreeNodeProps } from "./TreeNode";
+import { TreeNodeProps } from "../Components/Tree/TreeNode";
 import { TreeDispatch, treeReducer } from "./TreeDispatch";
 
 // The tree reducer, state, and dispatch objects are created here

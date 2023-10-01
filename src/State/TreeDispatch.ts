@@ -1,5 +1,5 @@
 ﻿import { Dispatch } from "react";
-import { TreeNodeProps } from "./TreeNode";
+import { TreeNodeProps } from "../Components/Tree/TreeNode";
 import { TreeState } from "./TreeState";
 
 const throwInvalidDispatch = (name: string, ...args: any) => { throw new Error(`TreeDispatch: Operation not supported: ${name}(${args})`); };

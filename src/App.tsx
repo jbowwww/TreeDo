@@ -1,6 +1,6 @@
-import { TreeContextProvider } from './Tree/TreeContext';
-import { useTree } from './Tree/TreeState';
-import { TreeColumnView } from './Tree/TreeColumnView';
+import { TreeContextProvider } from './Components/Tree/TreeContext';
+import { useTree } from './State/TreeState';
+import { TreeColumnView } from './Components/Tree/TreeColumnView';
 
 export const App = () => {
     const [treeState, treeDispatch] = useTree(items);
