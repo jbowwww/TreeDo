@@ -21,8 +21,9 @@ export class TreeState {
 
     updateNode(path: number[], nodeUpdater: (node: TreeNodeProps) => TreeNodeProps) {
         return new TreeState((function nodesVisitor(relativePath: number[], nodes?: TreeNodeProps[]): TreeNodeProps[] | undefined {
-            return nodes?.map((subNode, subNodeIndex) => subNodeIndex === relativePath?.[0] ? relativePath.length === 1 ?
-                    nodeUpdater(subNode) : { ...subNode, nodes: nodesVisitor(relativePath.slice(1), subNode.nodes) } : subNode) ?? [];
+            return relativePath.length === 0 ? nodeUpdater({ nodes }).nodes : nodes?.map((subNode, subNodeIndex) =>
+                subNodeIndex === relativePath?.[0] ? relativePath.length === 1 ? nodeUpdater(subNode) :
+                    { ...subNode, nodes: nodesVisitor(relativePath.slice(1), subNode.nodes) } : subNode) ?? [];
         })(path, this.nodes));
     }
 

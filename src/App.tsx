@@ -1,3 +1,4 @@
+import Appbar from './Components/Appbar';
 import { TreeContextProvider } from './Components/Tree/TreeContext';
 import { useTree } from './State/TreeState';
 import { TreeColumnView } from './Components/Tree/TreeColumnView';
@@ -8,6 +9,7 @@ export const App = () => {
     return (
         <div style={appStyle}>
             <TreeContextProvider state={treeState} dispatch={treeDispatch}>
+                <Appbar />
                 <TreeColumnView />
             </TreeContextProvider>
         </div>

@@ -20,11 +20,11 @@ const Column = ({ path, selectedIndex, onSelectItem }: ColumnProps) => {
                 const newPath = [...path, index];
                 return (
                     <TreeNode
-                    {...item}
-                    key={`TN-${newPath.join('-')}`}
-                    index={index}
-                    path={newPath}
-                    selected={selectedIndex === index}
+                        {...item}
+                        key={`TN-${newPath.join('-')}`}
+                        index={index}
+                        path={newPath}
+                        selected={selectedIndex === index}
                         onSelect={item => handleSelectItem(index, item)} />
                 );
             })}
