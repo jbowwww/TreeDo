@@ -1,5 +1,6 @@
 import TreeNode, { TreeNodeProps } from './TreeNode';
 import { useTreeContext } from './TreeContext';
+import './Tree.css';
 
 export interface ColumnProps {
     path?: number[];
@@ -15,7 +16,7 @@ const Column = ({ path, selectedIndex, onSelectItem }: ColumnProps) => {
     };
 
     return (
-        <div>
+        <div className="treeColumn">
             {path && items && items.map((item, index) => {
                 const newPath = [...path, index];
                 return (

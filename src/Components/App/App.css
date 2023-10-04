@@ -5,6 +5,29 @@
   text-align: center;
 }
 
+.appbar {
+    position: absolute;
+    height: 100%;
+    left: -26px;
+    top: 0px;
+    margin: 0px;
+    padding-top: 12px;
+    text-align: justify;
+    background: rgb(24, 24, 24);
+    opacity: 60%;
+    transition: transform 250ms;
+}
+.appbar:hover {
+    transform: translateX(+32px);
+}
+
+.appbar .appbarButton svg {
+    fill: lightgray;
+}
+.appbar .appbarButton svg:hover {
+    fill: yellow;
+}
+
 .logo {
   height: 6em;
   padding: 1.5em;

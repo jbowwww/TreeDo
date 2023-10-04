@@ -1,7 +1,7 @@
-import Appbar from './Components/Appbar';
-import { TreeContextProvider } from './Components/Tree/TreeContext';
-import { useTree } from './State/TreeState';
-import { TreeColumnView } from './Components/Tree/TreeColumnView';
+import Appbar from './Appbar';
+import { TreeContextProvider } from '..//Tree/TreeContext';
+import { useTree } from '../../State/TreeState';
+import { TreeColumnView } from '../Tree/TreeColumnView';
 
 export const App = () => {
     const [treeState, treeDispatch] = useTree(items);

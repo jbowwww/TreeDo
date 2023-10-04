@@ -1,4 +1,5 @@
 import React, { CSSProperties, PropsWithChildren } from 'react';
+import './App.css';
 
 export interface AppbarButtonProps extends PropsWithChildren<{
     style?: CSSProperties
@@ -7,7 +8,7 @@ export interface AppbarButtonProps extends PropsWithChildren<{
 };
 
 const AppbarButton = (props: AppbarButtonProps) => (
-    <button role="menuitem" onClick={props.onClick} {...props}>
+    <button role="menuitem" className="appbarButton" onClick={props.onClick} {...props}>
         {props.children}
     </button>
 );

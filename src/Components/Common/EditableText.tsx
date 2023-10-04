@@ -1,7 +1,7 @@
-import { useState, ChangeEvent, useEffect, useRef, CSSProperties, PropsWithChildren } from 'react';
+import { useState, ChangeEvent, useEffect, useRef, Attributes } from 'react';
 
-export interface EditableTextProps {
-    name: string;
+export interface EditableTextProps extends Attributes {
+    id: string;
     value?: string;
     isEditing?: boolean;
     onChange?: (value: string) => void;
@@ -10,7 +10,7 @@ export interface EditableTextProps {
     onEnded?: (value: string) => void;
 };
 
-export const EditableText = (props: PropsWithChildren<EditableTextProps> & { style?: CSSProperties }) => {
+export const EditableText = (props: EditableTextProps) => {
     const [isEditing, setIsEditing] = useState(props.isEditing ?? false);
     const [text, setText] = useState<string | undefined>(props.value);
     const inputRef = useRef<HTMLInputElement>(null);
@@ -41,18 +41,22 @@ export const EditableText = (props: PropsWithChildren<EditableTextProps> & { sty
         }
     }, [isEditing]);
 
-    return isEditing ?
-        <input
-            type="text"
-            name={props.name}
-            value={text ?? ""}
-            onChange={handleChange}
-            onBlur={handleBlur}
-            onEnded={handleEnded}
-            ref={inputRef}
-        /> : text ?
-            <span style={props.style} onDoubleClick={handleDoubleClick}>{text}</span>
-          : <span style={props.style} onDoubleClick={handleDoubleClick}>&nbsp;</span>;
+    return (
+        <div id={props.id}>
+            {isEditing ?
+                <input
+                    type="text"
+                    id={props.id}
+                    value={text ?? ""}
+                    onChange={handleChange}
+                    onBlur={handleBlur}
+                    onEnded={handleEnded}
+                    ref={inputRef}
+                /> : text ?
+                    <span onDoubleClick={handleDoubleClick}>{text}</span>
+                    : <span onDoubleClick={handleDoubleClick}>&nbsp;</span>
+            }
+        </div>);
 };
 
 export default EditableText;
