@@ -1,4 +1,23 @@
-﻿.treeColumn {
+﻿.treeColumnView1 {
+    display: grid;
+/*    height: 880px;*/
+    padding-left: 15em;
+    grid-template-columns: 0.75fr 0fr 0fr;
+    grid-template-rows: 1fr;
+    grid-gap: 20px;
+    transition: 250ms;
+}
+
+.treeColumnView2 {
+    padding-left: 0em;
+    grid-template-columns: 0.3fr 1fr 0.15fr;
+}
+
+.treeColumnView3 {
+    grid-template-columns: 0.35fr 0.55fr 1fr;
+}
+
+.treeColumn {
     text-align: justify;
     margin-top: 1em;
 }

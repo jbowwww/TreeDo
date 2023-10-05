@@ -1,45 +1,47 @@
 ﻿import { useState } from 'react';
 import Column from './TreeColumn';
-import { TreeNodeProps } from './TreeNode';
+import { useTreeStateContext } from './TreeContext';
+import classNames from 'classnames';
 
 export interface TreeColumnViewProps {
     basePath?: number[];
 };
 
 export const TreeColumnView = ({ basePath = [] }: TreeColumnViewProps) => {
-    const [column1SelectedIndex, setColumn1SelectedIndex] = useState<number | undefined>();
-    const [column2SelectedIndex, setColumn2SelectedIndex] = useState<number | undefined>();
-    const [column3SelectedIndex, setColumn3SelectedIndex] = useState<number | undefined>();
+    // currently selected (absolute) path describes 0 or more selected items selected in each column, by removing
+    // first basePath.length items in selectedPath, the next items (if they exist) in the path array are the column selections
+    // so selectedPath[N] is the selected item index in column N
+    const [selectedPath, setSelectedPath] = useState<number[]>([]);
+    const treeState = useTreeStateContext();
+    const lastColumnDepth = selectedPath.length - basePath.length;
+    const lastColumnDisplay = (treeState?.getNode(selectedPath)?.nodes?.length ?? 0) > 0;
+    const columnDisplayCount = lastColumnDepth + (lastColumnDisplay ? 1 : 0);
 
-    const column2Path = column1SelectedIndex !== undefined ?
-        [...basePath, column1SelectedIndex] : undefined;
-    const column3Path = column2Path !== undefined && column2SelectedIndex !== undefined ?
-        [...column2Path, column2SelectedIndex] : undefined;
-    const setColumnSelectedIndex = [
-        setColumn1SelectedIndex,
-        setColumn2SelectedIndex,
-        setColumn3SelectedIndex
-    ];
-
-    const makeHandleColumnSelectItem = (columnIndex: number) =>
-        (item: TreeNodeProps, index: number) => {
-            setColumnSelectedIndex[columnIndex](index);
-            console.debug(`App: Column #${columnIndex}.onSelectItem(${item}, ${index})`);
-        };
+    const handleSelectedItem = (newRelativePath: number[]) => {
+        setSelectedPath([...basePath, ...newRelativePath]);
+    };
 
     return (
-        <div style={treeColumnViewStyle} >
-            <Column key={0} path={basePath} selectedIndex={column1SelectedIndex} onSelectItem={makeHandleColumnSelectItem(0)} />
-            <Column key={1} path={column2Path} selectedIndex={column2SelectedIndex} onSelectItem={makeHandleColumnSelectItem(1)} />
-            <Column key={2} path={column3Path} selectedIndex={column3SelectedIndex} onSelectItem={makeHandleColumnSelectItem(2)} />
+        <div className={classNames({
+            treeColumnView1: 1,
+            treeColumnView2: columnDisplayCount > 1,
+            treeColumnView3: columnDisplayCount > 2,
+        })}>
+            <Column
+                path={basePath}
+                selectedPath={selectedPath}
+                onSelectItem={setSelectedPath}
+            />
+            {columnDisplayCount > 1 && <Column
+                path={[...basePath, ...[selectedPath[0] ?? []]]}
+                selectedPath={selectedPath}
+                onSelectItem={handleSelectedItem}
+            />}
+            {columnDisplayCount > 2 && <Column
+                path={[...basePath, ...[selectedPath[0] ?? []], ...[selectedPath[1] ?? []]]}
+                selectedPath={selectedPath}
+                onSelectItem={handleSelectedItem}
+            />}
         </div>
     );
 }
-
-const treeColumnViewStyle = {
-    display: "grid",
-    height: "880px",
-    gridTemplateColumns: "0.6fr 0.9fr 0.6fr",
-    gridTemplateRows: "1fr",
-    gridGap: "20px",
-};
