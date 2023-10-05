@@ -1,33 +1,28 @@
-import TreeNode, { TreeNodeProps } from './TreeNode';
+import TreeNode from './TreeNode';
 import { useTreeContext } from './TreeContext';
 import './Tree.css';
 
 export interface ColumnProps {
-    path?: number[];
-    selectedIndex?: number;
-    onSelectItem?: (item: TreeNodeProps, index: number) => void;
+    path: number[];                // (absolute) root path for this column - displays sub items underneath this path
+    selectedPath?: number[];
+    onSelectItem?: (selectedPath: number[]) => void;
 }
 
-const Column = ({ path, selectedIndex, onSelectItem }: ColumnProps) => {
+const Column = (props: ColumnProps) => {
     const [treeState,] = useTreeContext();
-    const items = path ? treeState?.getNode(path).nodes : undefined;
-    const handleSelectItem = (index: number, item: TreeNodeProps) => {
-        onSelectItem?.(item, index);
-    };
+    const items = props.path ? treeState?.getNode(props.path).nodes : [];
 
     return (
         <div className="treeColumn">
-            {path && items && items.map((item, index) => {
-                const newPath = [...path, index];
-                return (
-                    <TreeNode
-                        {...item}
-                        key={`TN-${newPath.join('-')}`}
-                        index={index}
-                        path={newPath}
-                        selected={selectedIndex === index}
-                        onSelect={item => handleSelectItem(index, item)} />
-                );
+            {items?.map((item, index) => {
+                const newPath = [...(props.path ?? []), index];
+                return (<TreeNode
+                    {...item}
+                    key={`TN${props.path?.map(p => "-" + p)}-${index}`}
+                    index={index}
+                    path={newPath}
+                    selected={props.selectedPath?.length === 0 ? false : newPath.every((p, i) => p === props.selectedPath![i])}
+                    onSelect={() => props.onSelectItem?.(newPath)} />);
             })}
         </div>
     );

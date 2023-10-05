@@ -29,13 +29,20 @@ export const TreeNode = (props: TreeNodeProps & TreeNodeRenderProps) => {
         <div className={classNames({
             treeNodeItem: true,
             treeNodeSelectedItem: props.selected ?? false
-        })} onClick={() => props.onSelect?.(props)}>
+        })} onClick={() => {
+            props.onSelect?.(props);
+        }
+        }>
             <div>
                 <EditableText id="title" value={props.title} onBlur={handleChangeTitle} />
                 <div style={{ float: "right" }}>
                     <button
                         ref={nodeAddButtonRef} className="treeNodeAddbutton"
-                        onClick={() => treeDispatch?.add(props.path, {})}>
+                        onClick={() => {
+                            treeDispatch?.add(props.path, {});
+                            props.onSelect?.(props);
+                        }
+                        }>
                         {isNodeAddButtonHovering ? "+" : props.nodes?.length ?? "-"}
                     </button>
                 </div>
