@@ -32,16 +32,16 @@ export const TreeColumnView = ({ basePath = [] }: TreeColumnViewProps) => {
                 selectedPath={selectedPath}
                 onSelectItem={setSelectedPath}
             />
-            {columnDisplayCount > 1 && <Column
+            <Column
                 path={[...basePath, ...[selectedPath[0] ?? []]]}
                 selectedPath={selectedPath}
                 onSelectItem={handleSelectedItem}
-            />}
-            {columnDisplayCount > 2 && <Column
+            />
+            <Column
                 path={[...basePath, ...[selectedPath[0] ?? []], ...[selectedPath[1] ?? []]]}
                 selectedPath={selectedPath}
                 onSelectItem={handleSelectedItem}
-            />}
+            />
         </div>
     );
 }
