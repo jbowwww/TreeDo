@@ -1,19 +1,25 @@
 ﻿.treeColumnView1 {
     display: grid;
-/*    height: 880px;*/
+    /*    height: 880px;*/
     padding-left: 15em;
-    grid-template-columns: 0.75fr 0fr 0fr;
+    padding-right: 15em;
+    grid-template-columns: 1fr 0fr 0fr;
     grid-template-rows: 1fr;
     grid-gap: 20px;
     transition: 250ms;
 }
 
 .treeColumnView2 {
-    padding-left: 0em;
-    grid-template-columns: 0.5fr 1fr 0.15fr;
+    padding-left: 5em;
+    padding-right: 5em;
+    grid-gap: 14px;
+    grid-template-columns: 0.5fr 1fr 0fr;
 }
 
 .treeColumnView3 {
+    padding-left: 2em;
+    padding-right: 2em;
+    grid-gap: 8px;
     grid-template-columns: 0.5fr 0.6fr 1fr;
 }
 
