@@ -47,10 +47,11 @@
 }
 
 #description {
+    height: 6em;
     background: rgb(64, 64, 64);
     border-radius: 6px;
     margin-top: 5px;
-    padding: 0px;
+    padding: 0.2em;
     font-size: 0.75em;
 }
 

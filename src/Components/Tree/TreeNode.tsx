@@ -30,7 +30,7 @@ export const TreeNode = (props: TreeNodeProps & TreeNodeRenderProps) => {
             className={classNames({ treeNodeItem: true, treeNodeSelectedItem: props.selected ?? false })}
             onClick={() => props.onSelect?.(props)}
         >
-            <div>
+            <div style={{ display: "grid", gridTemplateColumns: "1fr min-content" }}>
                 <EditableText id="title" value={props.title} onBlur={handleChangeTitle} />
                 <div style={{ float: "right" }}>
                     <button
@@ -42,7 +42,7 @@ export const TreeNode = (props: TreeNodeProps & TreeNodeRenderProps) => {
                 </div>
             </div>
             <div>
-                <EditableText id="description" value={props.description} onBlur={handleChangeDescription} />
+                <EditableText id="description" multiple={true} value={props.description} onBlur={handleChangeDescription} />
             </div>
         </div>
     );

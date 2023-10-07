@@ -1,8 +1,9 @@
-import { useState, ChangeEvent, useEffect, useRef, Attributes } from 'react';
+import { useState, ChangeEvent, useEffect, useRef, Attributes, MutableRefObject, CSSProperties } from 'react';
 
 export interface EditableTextProps extends Attributes {
     id: string;
     value?: string;
+    multiple?: boolean;
     isEditing?: boolean;
     onChange?: (value: string) => void;
     onEditing?: () => void;
@@ -13,14 +14,14 @@ export interface EditableTextProps extends Attributes {
 export const EditableText = (props: EditableTextProps) => {
     const [isEditing, setIsEditing] = useState(props.isEditing ?? false);
     const [text, setText] = useState<string | undefined>(props.value);
-    const inputRef = useRef<HTMLInputElement>(null);
+    const inputRef = useRef<HTMLInputElement | HTMLTextAreaElement>(null);
 
     const handleDoubleClick = () => {
         setIsEditing(true);
         props.onEditing?.();
     };
 
-    const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
+    const handleChange = (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
         setText(e.target.value);
         props.onChange?.(e.target.value);
     };
@@ -41,21 +42,40 @@ export const EditableText = (props: EditableTextProps) => {
         }
     }, [isEditing]);
 
+    const style: CSSProperties = {
+        width: "100%",
+        height: "100%",
+        boxSizing: "border-box", 
+        padding: "2px",
+        margin: "0px",
+        border: "none",
+    };
+
     return (
-        <div id={props.id} style={{ boxSizing: "border-box", padding: "0px", margin: "0px" }}>
+        <div id={props.id} style={{ boxSizing: "content-box" }}>
             {isEditing ?
-                <input
-                    style={{ width: "100%", boxSizing: "border-box", padding: "0px", margin: "0px"}}
-                    type="text"
-                    name={props.id}
-                    value={text ?? ""}
-                    onChange={handleChange}
-                    onBlur={handleBlur}
-                    onEnded={handleEnded}
-                    ref={inputRef}
-                /> : text ?
-                    <span onDoubleClick={handleDoubleClick}>{text}</span>
-                    : <span onDoubleClick={handleDoubleClick}>&nbsp;</span>
+                (props.multiple ?
+                    (<textarea
+                        style={style}
+                        name={props.id}
+                        value={text ?? ""}
+                        onChange={handleChange}
+                        onBlur={handleBlur}
+                        onEnded={handleEnded}
+                        ref={inputRef as MutableRefObject<HTMLTextAreaElement>}
+                    />) :
+                    (<input
+                        style={style}
+                        type="text"
+                        name={props.id}
+                        value={text ?? ""}
+                        onChange={handleChange}
+                        onBlur={handleBlur}
+                        onEnded={handleEnded}
+                        ref={inputRef as MutableRefObject<HTMLInputElement>}
+                    />)) : (text ?
+                    (<div style={style} onDoubleClick={handleDoubleClick}>{text}</div>)
+                    : (<div style={style} onDoubleClick={handleDoubleClick}>&nbsp;</div>))
             }
         </div>);
 };
