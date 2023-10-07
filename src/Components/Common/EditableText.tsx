@@ -42,11 +42,12 @@ export const EditableText = (props: EditableTextProps) => {
     }, [isEditing]);
 
     return (
-        <div id={props.id}>
+        <div id={props.id} style={{ boxSizing: "border-box", padding: "0px", margin: "0px" }}>
             {isEditing ?
                 <input
+                    style={{ width: "100%", boxSizing: "border-box", padding: "0px", margin: "0px"}}
                     type="text"
-                    id={props.id}
+                    name={props.id}
                     value={text ?? ""}
                     onChange={handleChange}
                     onBlur={handleBlur}
