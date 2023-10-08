@@ -1,41 +1,37 @@
 ﻿.treeColumnView1 {
     display: grid;
-    /*    height: 880px;*/
-    padding-left: 15em;
-    padding-right: 15em;
-    grid-template-columns: 1fr 0fr 0fr;
+    grid-template-columns: 1fr 3fr 0fr 0fr 1fr;
     grid-template-rows: 1fr;
     grid-gap: 20px;
     transition: 250ms;
 }
 
 .treeColumnView2 {
-    padding-left: 5em;
-    padding-right: 5em;
     grid-gap: 14px;
-    grid-template-columns: 0.5fr 1fr 0fr;
+    grid-template-columns: 0.2fr 0.5fr 1fr 0fr 0.2fr;
 }
 
 .treeColumnView3 {
-    padding-left: 2em;
-    padding-right: 2em;
     grid-gap: 8px;
-    grid-template-columns: 0.5fr 0.6fr 1fr;
+    grid-template-columns: 0.1fr 0.5fr 0.6fr 1fr 0.1fr;
 }
 
 .treeColumn {
+    position: relative;
+    height: 100%;
     text-align: justify;
     margin-top: 1em;
 }
 
 .treeNodeItem {
-    position: relative;
     box-sizing: border-box;
-    background: rgb(6,14,6);
+    max-width: 50em;
+    background: rgb(222,236,252);
     border: 1px solid grey;
     border-radius: 10px;
     padding: 0.2em 0.4em 0.52em;
     margin: 0.8em;
+    filter: drop-shadow(#666666 5px 5px 2px);
 }
 
 .treeNodeSelectedItem {
@@ -48,7 +44,7 @@
 
 #description {
     height: 6em;
-    background: rgb(64, 64, 64);
+    background: rgb(232, 232, 242);
     border-radius: 6px;
     margin-top: 5px;
     padding: 0.2em;

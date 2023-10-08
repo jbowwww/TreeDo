@@ -22,11 +22,13 @@ export const TreeColumnView = ({ basePath = [] }: TreeColumnViewProps) => {
     };
 
     return (
+        <div style={{ position: "absolute", width: "100%", height: "100%" } }>
         <div className={classNames({
             treeColumnView1: 1,
             treeColumnView2: columnDisplayCount > 1,
             treeColumnView3: columnDisplayCount > 2,
         })}>
+        <div>&nbsp;</div>
             <Column
                 path={basePath}
                 selectedPath={selectedPath}
@@ -42,6 +44,8 @@ export const TreeColumnView = ({ basePath = [] }: TreeColumnViewProps) => {
                 selectedPath={selectedPath}
                 onSelectItem={handleSelectedItem}
             />
+            <div>&nbsp;</div>
+            </div>
         </div>
     );
 }
