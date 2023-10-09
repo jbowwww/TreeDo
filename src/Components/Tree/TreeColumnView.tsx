@@ -1,6 +1,6 @@
 ﻿import { useState } from 'react';
 import Column from './TreeColumn';
-import { useTreeStateContext } from './TreeContext';
+import { useTreeStateContext } from '../../Data/Tree/TreeContext';
 import classNames from 'classnames';
 
 export interface TreeColumnViewProps {

@@ -1,6 +1,6 @@
-import { useTreeDispatchContext } from "./TreeContext";
-import EditableText from "../Common/EditableText";
-import { useHover } from "../../Hooks/useHover";
+import { useTreeDispatchContext } from '../../Data/Tree/TreeContext';
+import EditableText from '../Common/EditableText';
+import { useHover } from '../../Hooks/useHover';
 import './Tree.css';
 import classNames from 'classnames';
 

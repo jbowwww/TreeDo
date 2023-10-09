@@ -1,11 +1,11 @@
-﻿import { useReducer } from "react";
-import { TreeNodeProps } from "../Components/Tree/TreeNode";
-import { TreeDispatch, treeReducer } from "./TreeDispatch";
+﻿import { useMemo, useReducer } from 'react';
+import { TreeNodeProps } from '../../Components/Tree/TreeNode';
+import { TreeDispatch, treeDispatch, treeReducer } from './TreeDispatch';
 
 // The tree reducer, state, and dispatch objects are created here
 export const useTree = (initialState: TreeNodeProps[]): [TreeState, TreeDispatch] => {
     const [/*rawS*/state, rawDispatch] = useTreeReducer(new TreeState(initialState));
-    const dispatch = new TreeDispatch(rawDispatch);
+    const dispatch = useMemo(() => treeDispatch(rawDispatch), [rawDispatch]);
     return [state, dispatch];
 };
 

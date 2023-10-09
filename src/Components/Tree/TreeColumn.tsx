@@ -1,5 +1,5 @@
 import TreeNode from './TreeNode';
-import { useTreeContext } from './TreeContext';
+import { useTreeContext } from '../../Data/Tree/TreeContext';
 import './Tree.css';
 
 export interface ColumnProps {

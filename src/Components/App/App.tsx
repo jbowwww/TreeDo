@@ -1,6 +1,6 @@
 import Appbar from './Appbar';
-import { TreeContextProvider } from '..//Tree/TreeContext';
-import { useTree } from '../../State/TreeState';
+import { TreeContextProvider } from '../../Data/Tree/TreeContext';
+import { useTree } from '../../Data/Tree/TreeState';
 import { TreeColumnView } from '../Tree/TreeColumnView';
 
 export const App = () => {
