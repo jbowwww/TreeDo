@@ -22,7 +22,7 @@ export const TreeColumnView = ({ basePath = [] }: TreeColumnViewProps) => {
     };
 
     return (
-        <div style={{ position: "absolute", width: "100%", height: "100%" } }>
+        <div className="treeColumnView">
             <div className={classNames({
                 treeColumnView1: 1,
                 treeColumnView2: columnDisplayCount > 1,

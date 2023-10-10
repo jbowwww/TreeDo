@@ -1,4 +1,11 @@
-﻿.treeColumnView1 {
+﻿.treeColumnView {
+    position: absolute;
+    margin-left: 38px;
+	width: 100%;
+	height: 100%;
+}
+
+.treeColumnView1 {
     display: grid;
     grid-template-columns: 1fr 3fr 0fr 0fr 1fr;
     grid-template-rows: 1fr;
@@ -35,7 +42,9 @@
 }
 
 .treeNodeSelectedItem {
-    background: rgb(128, 128, 64);
+    background: rgb(128;
+	128;
+	64);
 }
 
 #title {
@@ -44,7 +53,9 @@
 
 #description {
     height: 6em;
-    background: rgb(232, 232, 242);
+    background: rgb(232;
+	232;
+	242);
     border-radius: 6px;
     margin-top: 5px;
     padding: 0.2em;
@@ -57,7 +68,9 @@ button.treeNodeAddbutton {
     padding: 0px;
     margin: 0px;
     top: 0px;
-    background: rgb(30, 30, 30);
+    background: rgb(30;
+	30;
+	30);
     border: 1px solid transparent;
     border-radius: 8px;
     font-size: 0.8em;

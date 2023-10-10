@@ -1,16 +1,18 @@
-import React, { CSSProperties, PropsWithChildren } from 'react';
-import './App.css';
+import { MouseEventHandler, PropsWithChildren } from 'react';
 
 export interface AppbarButtonProps extends PropsWithChildren<{
-    style?: CSSProperties
-}> {
-    onClick?: React.MouseEventHandler<HTMLButtonElement>;
-};
+    onClick?: MouseEventHandler;
+}> { };
 
-const AppbarButton = (props: AppbarButtonProps) => (
-    <button role="menuitem" className="appbarButton" onClick={props.onClick} {...props}>
-        {props.children}
-    </button>
-);
+const AppbarButton = (props: AppbarButtonProps) => {
+    const handleClick = event => {
+        props.onClick?.(event);
+    };
+    return (
+        <button role="menuitem" className="appbarButton" onClick={handleClick}>
+            {props.children}
+        </button>
+    );
+};
 
 export default AppbarButton;
