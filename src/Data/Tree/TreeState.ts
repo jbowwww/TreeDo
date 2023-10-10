@@ -17,10 +17,44 @@ export const useTreeReducer = <T>(initialState: TreeState<T>) => useReducer(Tree
 
 export class TreeStore<T> {
     public readonly state: TreeState<T>;
-    public readonly dispatch: Dispatch<T>;
+    public readonly dispatch: Dispatch<(state: TreeState<T>) => TreeState<T>>;
+
     constructor(state: TreeState<T>, dispatch: Dispatch<any>) {
         this.state = state;
         this.dispatch = dispatch;
+    }
+
+    // Return the node at the given path in the tree (or undefined)
+    getNode(path: number[]) {
+        return path.reduce<TreeNode<T> | undefined>((acc, pathPart) => acc?.nodes?.[pathPart], this.state.nodes.at(path.unshift()));
+    }
+
+    // Replace a node at the given path in the tree using nodeUpdater function.
+    // Constructs and returns a new TreeState<T> because we shouldn't modify state directly.
+    // Combining these two steps should be more efficient than cloning the entire tree and then replacing the node.
+    // At each node, the new state receives a new array instances where the items are the old instances, except
+    // for the node that is to be replaced, or any of that node's parents. This should minimise memory use and copying,
+    // while still ensuring react updates any components depending on the state appropriately.
+    updateNode(path: number[], nodeUpdater: (node: TreeNode<T>) => TreeNode<T>): TreeState<T> {
+        const nodesVisitor = (relativePath: number[], nodes?: TreeNode<T>[]): TreeNode<T>[] | undefined =>
+            relativePath.length === 0 ? nodes : nodes?.map((subNode, subNodeIndex) =>       // nodes[] arrray recrecreated for every node
+                subNodeIndex === relativePath.at(0) ? relativePath.length === 1 ? nodeUpdater(subNode) :    // node being replaced
+                    { ...subNode, nodes: nodesVisitor(relativePath.slice(1), subNode.nodes) } : // parents of the node being replaced (also replace)
+                    subNode) ?? [];     // nodes not in the path to the node being replaced, are not cloned, the instances are just used in new nodes[] arrays (but child nodes[] are not)
+        // if this function were called with path = [], it would be cloning the tree for no point (so don't)
+        return new TreeState(nodesVisitor(path, this.state.nodes));
+    }
+
+    clear(path: number[]) {
+        this.dispatch(() => this.updateNode(path, node => ({ ...node, nodes: [] })));   // using state parameter avoids having to bind to this
+    }
+
+
+
+    toJSON(/*options: any*/) {
+        const jsonData = JSON.stringify(this.state.nodes);
+        window.document.textContent = jsonData;
+        //const jsonFile = jsonData, "tree.json", { endings: "transparent", type: "text/json" });\
     }
 }
 
@@ -47,37 +81,7 @@ export class TreeState<T> {
 
     constructor(public readonly nodes: Array<TreeNode<T>> = []) { }
 
-    // Return the node at the given path in the tree (or undefined)
-    getNode(path: number[]) {
-        return path.reduce<TreeNode<T> | undefined>((acc, pathPart) => acc?.nodes?.[pathPart], this.nodes.at(path.unshift()));
-    }
 
-    // Replace a node at the given path in the tree using nodeUpdater function.
-    // Constructs and returns a new TreeState<T> because we shouldn't modify state directly.
-    // Combining these two steps should be more efficient than cloning the entire tree and then replacing the node.
-    // At each node, the new state receives a new array instances where the items are the old instances, except
-    // for the node that is to be replaced, or any of that node's parents. This should minimise memory use and copying,
-    // while still ensuring react updates any components depending on the state appropriately.
-    updateNode(path: number[], nodeUpdater: (node: TreeNode<T>) => TreeNode<T>): TreeState<T> {
-        const nodesVisitor = (relativePath: number[], nodes?: TreeNode<T>[]): TreeNode<T>[] | undefined =>
-            relativePath.length === 0 ? nodes : nodes?.map((subNode, subNodeIndex) =>       // nodes[] arrray recrecreated for every node
-                subNodeIndex === relativePath.at(0) ? relativePath.length === 1 ? nodeUpdater(subNode) :    // node being replaced
-                    { ...subNode, nodes: nodesVisitor(relativePath.slice(1), subNode.nodes) } : // parents of the node being replaced (also replace)
-                    subNode) ?? [];     // nodes not in the path to the node being replaced, are not cloned, the instances are just used in new nodes[] arrays (but child nodes[] are not)
-        // if this function were called with path = [], it would be cloning the tree for no point (so don't)
-        return new TreeState(nodesVisitor(path, this.nodes));
-    }
-    clear(path: number[]) {
-        this.dispatch((state: TreeState<T>) => state.updateNode(path, node => ({ ...node, nodes: [] })));   // using state parameter avoids having to bind to this
-    }
-
-
-
-    toJSON(/*options: any*/) {
-        const jsonData = JSON.stringify(this.nodes);
-        window.document.textContent = jsonData;
-        //const jsonFile = jsonData, "tree.json", { endings: "transparent", type: "text/json" });\
-    }
 
     static treeReducer<T>(state: TreeState<T>, action: (state: TreeState<T>) => TreeState<T>): TreeState<T> {
         return action(state);

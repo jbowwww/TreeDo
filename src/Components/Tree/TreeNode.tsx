@@ -1,4 +1,4 @@
-import { useTreeDispatchContext } from '../../Data/Tree/TreeContext';
+//import { useTreeDispatchContext } from '../../Data/Tree/TreeContext';
 import EditableText from '../Common/EditableText';
 import { useHover } from '../../Hooks/useHover';
 import './Tree.css';
@@ -19,11 +19,11 @@ export interface TreeNodeRenderProps {
 
 export const TreeNode = (props: TreeNodeProps & TreeNodeRenderProps) => {
     const [nodeAddButtonRef, isNodeAddButtonHovering] = useHover<HTMLButtonElement>();
-    const treeDispatch = useTreeDispatchContext();
+    //const treeDispatch = useTreeDispatchContext();
 
     //const handleItemClick = () => props.onSelect?.(props);
-    const handleChangeTitle = (value: string) => treeDispatch?.update(props.path, { title: value, description: props.description, nodes: props.nodes });
-    const handleChangeDescription = (value: string) => treeDispatch?.update(props.path, { title: props.title, description: value, nodes: props.nodes });
+    const handleChangeTitle = (/*value: string*/) => null;// treeDispatch?.update(props.path, { title: value, description: props.description/*, nodes: props.nodes*/ });
+    const handleChangeDescription = (/*value: string*/) => null;// treeDispatch?.update(props.path, { title: props.title, description: value/*, nodes: props.nodes*/ });
 
     return (
         <div
@@ -35,9 +35,9 @@ export const TreeNode = (props: TreeNodeProps & TreeNodeRenderProps) => {
                 <div style={{ float: "right" }}>
                     <button
                         ref={nodeAddButtonRef} className="treeNodeAddbutton"
-                        onClick={() => { treeDispatch?.add(props.path, {}); props.onSelect?.(props); }}
+                        onClick={() => { /*treeDispatch?.add(props.path, {});*/ props.onSelect?.(props); }}
                     >
-                        {isNodeAddButtonHovering ? "+" : props.nodes?.length ?? "-"}
+                        {isNodeAddButtonHovering ? "+" : /*props.nodes?.length ??*/ "-"}
                     </button>
                 </div>
             </div>

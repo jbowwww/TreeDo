@@ -1,17 +1,18 @@
 import Appbar from './Appbar';
-import { TreeContextProvider } from '../../Data/Tree/TreeContext';
+//import { TreeContextProvider } from '../../Data/Tree/TreeContext';
 import { useTree } from '../../Data/Tree/TreeState';
 import { TreeColumnView } from '../Tree/TreeColumnView';
 
 export const App = () => {
-    const [treeState, treeDispatch] = useTree(items);
-
+    //const [treeState, treeDispatch] = useTree(items);
+    const treeStore = useTree(items);
+    console.log('treeStore', treeStore);
     return (
         <div style={appStyle}>
-            <TreeContextProvider state={treeState} dispatch={treeDispatch}>
+            {/*<TreeContextProvider state={treeState} dispatch={treeDispatch}>*/}
                 <Appbar />
                 <TreeColumnView />
-            </TreeContextProvider>
+            {/*</TreeContextProvider>*/}
         </div>
     );
 };
