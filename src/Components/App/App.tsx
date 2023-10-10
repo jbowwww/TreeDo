@@ -1,18 +1,16 @@
 import Appbar from './Appbar';
-//import { TreeContextProvider } from '../../Data/Tree/TreeContext';
-import { useTree } from '../../Data/Tree/TreeState';
+import { useTree, TreeContextProvider } from '../../State/Tree';
 import { TreeColumnView } from '../Tree/TreeColumnView';
 
 export const App = () => {
-    //const [treeState, treeDispatch] = useTree(items);
-    const treeStore = useTree(items);
-    console.log('treeStore', treeStore);
+    const [treeState, treeActions] = useTree(items);
+    console.log('treeStore', treeState);
     return (
-        <div style={appStyle}>
-            {/*<TreeContextProvider state={treeState} dispatch={treeDispatch}>*/}
+        <div className="app">
+            <TreeContextProvider value={[treeState, treeActions]}>
                 <Appbar />
                 <TreeColumnView />
-            {/*</TreeContextProvider>*/}
+            </TreeContextProvider>
         </div>
     );
 };
@@ -34,7 +32,3 @@ const items: any = [{
 }, {
     title: "Item 4", description: "Description 4",
 }];
-
-export const appStyle = {
-    height: "880px",
-};

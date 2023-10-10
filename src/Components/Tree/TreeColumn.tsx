@@ -1,5 +1,5 @@
 import TreeNode from './TreeNode';
-import { useTreeContext } from '../../Data/Tree/TreeContext';
+import { useTreeContext } from '../../State/Tree';
 import './Tree.css';
 
 export interface ColumnProps {
@@ -9,8 +9,8 @@ export interface ColumnProps {
 }
 
 const Column = (props: ColumnProps) => {
-    const [treeState,] = useTreeContext();
-    const items = props.path ? treeState?.getNode(props.path).nodes : [];
+    const [/*treeState*/, treeDispatch] = useTreeContext();
+    const items = props.path ? (treeDispatch?.getNode(props.path)?.nodes ?? []) : [];
 
     return (
         <div className="treeColumn">
