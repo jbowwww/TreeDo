@@ -1,16 +1,17 @@
 import { MouseEventHandler, PropsWithChildren } from 'react';
+import { IconType } from 'react-icons';
 
 export interface AppbarButtonProps extends PropsWithChildren<{
-    onClick?: MouseEventHandler;
+    text?: string;
+    icon: IconType;
+    onClick?: MouseEventHandler<HTMLButtonElement>;
 }> { };
 
 const AppbarButton = (props: AppbarButtonProps) => {
-    const handleClick = event => {
-        props.onClick?.(event);
-    };
+    const handleClick: MouseEventHandler<HTMLButtonElement> = event => { props.onClick?.(event); };
     return (
         <button role="menuitem" className="appbarButton" onClick={handleClick}>
-            {props.children}
+            {props.icon ? <props.icon className="icon" textDecoration={props.text} /> : props.text ?? props.children}
         </button>
     );
 };
