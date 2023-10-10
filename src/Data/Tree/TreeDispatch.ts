@@ -15,9 +15,17 @@ export type TreeDispatch = ReturnType<typeof treeDispatch>;
 
 // Anyway to make this more concise, and/or automated ??
 export type TreeDispatchAction =
-    { type: 'CLEAR' | 'REMOVE', path: number[], } |
-    { type: 'ADD', path: number[], newNode: TreeNodeProps, } |
-    { type: 'UPDATE', path: number[], node: TreeNodeProps, };
+    clear({ type: 'clear', path: number[], }):
+    { type: 'remove', } |
+    { type: 'add', path: number[], newNode: TreeNodeProps, } |
+    { type: 'update', path: number[], node: TreeNodeProps, };
+
+enum TreeDispatchActionKind {
+    clear,
+    remove,
+    add,
+    update,
+};
 
 // The reducer
 export const treeReducer = (
@@ -26,7 +34,7 @@ export const treeReducer = (
 ) => {
     let newState: TreeState;
     switch (action.type) {
-        case "CLEAR": newState = state.updateNode(action.path, (node: TreeNodeProps) => ({ ...node, nodes: [] })); break;
+        case "clear": newState = state.updateNode(action.path, (node: TreeNodeProps) => ({ ...node, nodes: [] })); break;
         case "REMOVE": newState = state; throwInvalidDispatch("REMOVE", action); break;
         case "ADD": newState = state.updateNode(action.path, (node: TreeNodeProps) => ({ ...node, nodes: [...(node.nodes ?? []), action.newNode] })); break;
         case "UPDATE": newState = state.updateNode(action.path, () => action.node); break;

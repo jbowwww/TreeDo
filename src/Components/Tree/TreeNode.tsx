@@ -7,7 +7,7 @@ import classNames from 'classnames';
 export interface TreeNodeProps {
     title?: string;
     description?: string;
-    nodes?: TreeNodeProps[];
+    //nodes?: TreeNodeProps[];
 }
 
 export interface TreeNodeRenderProps {
