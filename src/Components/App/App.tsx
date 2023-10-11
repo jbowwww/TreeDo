@@ -1,8 +1,7 @@
 import Appbar from './Appbar';
-import { useTree, TreeContextProvider } from '../../State/Tree';
 import { TreeColumnView } from '../Tree/TreeColumnView';
-import { DragEventHandler,/*, useEffect*/ 
-useEffect} from 'react';
+import { useTree, TreeContextProvider } from '../../State/Tree';
+import { useEffect } from 'react';
 
 export const App = () => {
     const [treeState, treeActions] = useTree(items);
@@ -20,20 +19,16 @@ export const App = () => {
         };
         reader.readAsText(file);
     };
-    const handleDragEnter = (e: DragEvent) => { // DragEventHandler<HTMLDivElement> = e => {
-        //e.stopPropagation();
+    const handleDragEnter = (e: DragEvent) => {
         e.preventDefault();
         if (!e.dataTransfer?.items[0]) throw new Error(`Error loading file: items[0] empty`);
         e.dataTransfer.dropEffect = "copy";
-        //readJsonStateFile(e.dataTransfer.items[0].getAsFile());
     };
-    const handleDragOver = (e: DragEvent) => { //  DragEventHandler<HTMLDivElement> = e => {
-        //e.stopPropagation();
+    const handleDragOver = (e: DragEvent) => {
         e.preventDefault();
     };
 
-    const handleDrop = (e: DragEvent) => { //  DragEventHandler<HTMLDivElement> = e => {
-        e.stopPropagation();
+    const handleDrop = (e: DragEvent) => {
         e.preventDefault();
         if (!e.dataTransfer) throw new Error(`Error getting event.dataTransfer}`);
         if (!e.dataTransfer.files[0]) throw new Error(`Error loading file: files[0] empty`);
@@ -53,7 +48,6 @@ export const App = () => {
         return () => window.removeEventListener('dragover', handleDragOver);
     }, []);
 
-    //  onDragEnter={handleDragEnter} onDragOver={handleDragOver} onDrop={handleDrop} >
     return (
         <div className="app">
             <TreeContextProvider value={[treeState, treeActions]}>
