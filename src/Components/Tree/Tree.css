@@ -125,19 +125,19 @@ button.treeNodeAddbutton:focus-visible {
 .treeNodeSelectedItem {
     background: rgb(112, 122, 8);
 }
-    .treeNodeSelectedItem .description {
-        min-height: 1.5em;
-        height: min-content;
-        max-height: fit-content;
-        margin-bottom: -1px;
-    }
-        .treeNodeSelectedItem .description * {
-            border: none;
-            top: 0px;
-            bottom: 0px;
-            left: 0px;
-            right: 0px;
-            margin: 0px;
-        }
+.treeNodeSelectedItem .description {
+    min-height: 1.5em;
+    height: min-content;
+    max-height: fit-content;
+    margin-bottom: -1px;
+}
+.treeNodeSelectedItem .description * {
+    border: none;
+    top: 0px;
+    bottom: 0px;
+    left: 0px;
+    right: 0px;
+    margin: 0px;
+}
 .treeNodeSelectedItem .description input::placeholder {
 }
