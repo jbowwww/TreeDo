@@ -14,6 +14,22 @@ export const useTree = (initialState: TreeState): [TreeState, TreeActions] => {
     return [state, actions];
 };
 
+export const TreeContext = createContext<[TreeState, TreeActions] | null>(null);
+export const useTreeContext = () => useContext<[TreeState, TreeActions] | null>(TreeContext) ?? [];
+
+// Tree provider (currently includes both state and dispatch contexts)
+export const TreeContextProvider = ({
+    value,
+    children = []
+}: {
+    value: [TreeState, TreeActions],
+    children?: ReactNode
+}) => (
+    <TreeContext.Provider value={value}>
+        {children}
+    </TreeContext.Provider>
+);
+
 export class TreeActions {
     constructor(
         public readonly state: TreeState,
@@ -34,10 +50,16 @@ export class TreeActions {
         return newState ?? this.state;
     }
 
-    clear   (path: number[])                    { this.updateNode(path, node => ({ ...node, nodes: [] }));                                  }
-    remove  (/*path: number[]*/)                { }
-    add     (path: number[], node: TreeNode)    { this.updateNode(path, (n: TreeNode) => ({ ...n, nodes: [...(n.nodes ?? []), node] }));    }
-    update  (path: number[], node: TreeNode)    { this.updateNode(path, () => node);                                                        }
+    clear   (path: number[])                    { this.updateNode(path, node => ({ ...node, nodes: [] }));                                                      }
+    remove(path: number[]) {
+        const removeItem = path.pop();
+        if (removeItem)
+            this.updateNode(path, n => ({
+                ...n, nodes: n.nodes?.splice(removeItem)
+            }));
+    }
+    add     (path: number[], node: TreeNode)    { this.updateNode(path, (n: TreeNode) => ({ ...n, nodes: [...(n.nodes ?? []), node] }));                        }
+    update  (path: number[], node: TreeNode)    { this.updateNode(path, () => node);                                                                        }
 
     toJSON(/*options: any*/) {
         const jsonData = JSON.stringify(this.state);
@@ -45,19 +67,3 @@ export class TreeActions {
         //const jsonFile = jsonData, "tree.json", { endings: "transparent", type: "text/json" });\
     }
 }
-
-export const TreeContext = createContext<[TreeState, TreeActions] | null>(null);
-export const useTreeContext = () => useContext<[TreeState, TreeActions] | null>(TreeContext) ?? [];
-
-// Tree provider (currently includes both state and dispatch contexts)
-export const TreeContextProvider = ({
-    value,
-    children = []
-}: {
-    value: [TreeState, TreeActions],
-    children?: ReactNode
-}) => (
-    <TreeContext.Provider value={value}>
-        {children}
-    </TreeContext.Provider>
-);

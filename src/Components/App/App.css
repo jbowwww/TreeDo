@@ -19,7 +19,7 @@
     background: rgb(24, 24, 24);
     opacity: 60%;
     z-index: -999;
-    transition: transform 250ms;
+    transition: all ease 250ms;
 }
 .appbar:hover {
     transform: translateX(+2em);

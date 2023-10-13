@@ -1,4 +1,9 @@
-﻿.treeColumnView {
+﻿:root {
+    /* TODO: Learn how to use this to multiply the number of lines in each node item's description box */
+    --node-item-size-multiplier: 1;
+}
+
+.treeColumnView {
     position: absolute;
     margin-left: 38px;
 	width: 100%;
@@ -10,7 +15,7 @@
     grid-template-columns: 1fr 3fr 0fr 0fr 1fr;
     grid-template-rows: 1fr;
     grid-gap: 20px;
-    transition: 250ms;
+    transition: all ease 250ms;
 }
 
 .treeColumnView2 {
@@ -27,57 +32,58 @@
     position: relative;
     height: 100%;
     text-align: justify;
-    margin-top: 1em;
 }
 
 .treeNodeItem {
     box-sizing: border-box;
     max-width: 50em;
-    background: rgb(222,236,252);
+    background: rgb(12, 18, 76);
     border: 1px solid grey;
-    border-radius: 10px;
-    padding: 0.2em 0.4em 0.52em;
-    margin: 0.8em;
-    filter: drop-shadow(#666666 5px 5px 2px);
-}
-
-.treeNodeSelectedItem {
-    background: rgb(128;
-	128;
-	64);
-}
-
-#title {
-    display: inline;
-}
-
-#description {
-    height: 6em;
-    background: rgb(232;
-	232;
-	242);
     border-radius: 6px;
-    margin-top: 5px;
-    padding: 0.2em;
-    font-size: 0.75em;
+    padding: 0.2em 0.25em 0.3em 0.35em;
+    color: white;
+    margin: 0.5em;
+    filter: drop-shadow(#444444 4px 4px 3px);
 }
 
-button.treeNodeAddbutton {
-    width: 2.2em;
-    height: 1.5em;
-    padding: 0px;
-    margin: 0px;
+.title {
+    display: inline;
+    font-weight: bold;
+}
+.title input, .title textarea {
+    color: white;
+}
+.title input::placeholder, .title textarea::placeholder {}
+
+
+.treeNodeItem > .title .actionButtons {
+    float: right;
+    margin-bottom: 4px;
+}
+.treeNodeItem > .title .actionButtons button {
+    width: 2.4em;
+    height: 2em;
+    padding-bottom: 0px;
+    margin: 1px 0px 0px 2px;
     top: 0px;
-    background: rgb(30;
-	30;
-	30);
-    border: 1px solid transparent;
+    background: rgb(55, 55, 55);
+    border: 1px solid rgb(148, 148, 148);
     border-radius: 8px;
     font-size: 0.8em;
     font-weight: 500;
     font-family: inherit;
     cursor: pointer;
     transition: border-color 0.25s;
+}
+.treeNodeItem > .title .actionButtons button.hover {
+    border: 1px solid yellow;
+    background: rgb(40, 40, 40);
+}
+.treeNodeItem > .title .actionButtons button * {
+    vertical-align: top;
+}
+
+button.treeNodeAddbutton {
 }
 
 button.treeNodeAddbutton:hover {
@@ -87,4 +93,39 @@ button.treeNodeAddbutton:hover {
 button.treeNodeAddbutton:focus,
 button.treeNodeAddbutton:focus-visible {
     outline: 4px auto -webkit-focus-ring-color;
+}
+
+.treeNodeItem .description {
+    height: 1.5em;
+    overflow: clip;
+    text-overflow: ellipsis;
+    overflow-clip-margin: 2px;
+    background: rgb(242, 242, 250);
+    color: black;
+    border-radius: 6px;
+    padding: 2px;
+    font-size: 0.8em;
+}
+.treeNodeItem .description::after {
+    /*content:target-text("<br/>...");*/
+}
+.treeNodeItem .description * {
+    height: 100%;
+    width: 100%;
+    padding-left: 3px;
+}
+.treeNodeItem .description input::placeholder {
+}
+
+.treeNodeSelectedItem {
+    height: none;
+    background: rgb(112, 122, 8);
+}
+.treeNodeSelectedItem .description {
+    min-height: 6em;
+    padding: 2px;
+}
+.treeNodeSelectedItem .description input {
+}
+.treeNodeSelectedItem .description input::placeholder {
 }

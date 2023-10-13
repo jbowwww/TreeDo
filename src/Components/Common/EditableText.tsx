@@ -1,8 +1,9 @@
 import { useState, ChangeEvent, useEffect, useRef, Attributes, MutableRefObject, CSSProperties } from 'react';
 
 export interface EditableTextProps extends Attributes {
-    id: string;
+    className?: string;
     value?: string;
+    placeholder?: string;
     multiple?: boolean;
     isEditing?: boolean;
     onChange?: (value: string) => void;
@@ -43,22 +44,24 @@ export const EditableText = (props: EditableTextProps) => {
     }, [isEditing]);
 
     const style: CSSProperties = {
-        width: "100%",
-        height: "100%",
-        boxSizing: "border-box", 
-        padding: "2px",
-        margin: "0px",
-        border: "none",
+        //width: "auto",
+        //height: "100%",
+        //boxSizing: "border-box", 
+        //padding: "2px",
+        //margin: "0px",
+        //border: "none",
     };
 
     return (
-        <div id={props.id} style={{ boxSizing: "content-box" }}>
-            {isEditing ?
+        //<div className={props.className} style={{ boxSizing: "content-box" }}>
+            isEditing ?
                 (props.multiple ?
                     (<textarea
                         style={style}
-                        name={props.id}
+                        className={props.className}
+                        name={props.className}
                         value={text ?? ""}
+                        placeholder={props.placeholder ?? ""}
                         onChange={handleChange}
                         onBlur={handleBlur}
                         onEnded={handleEnded}
@@ -66,18 +69,21 @@ export const EditableText = (props: EditableTextProps) => {
                     />) :
                     (<input
                         style={style}
+                        className={props.className}
                         type="text"
-                        name={props.id}
+                        name={props.className}
                         value={text ?? ""}
+                        placeholder={props.placeholder ?? ""}
                         onChange={handleChange}
                         onBlur={handleBlur}
                         onEnded={handleEnded}
                         ref={inputRef as MutableRefObject<HTMLInputElement>}
-                    />)) : (text ?
-                    (<div style={style} onDoubleClick={handleDoubleClick}>{text}</div>)
-                    : (<div style={style} onDoubleClick={handleDoubleClick}>&nbsp;</div>))
-            }
-        </div>);
+                    />)) : (text || props.placeholder ?
+                    (<div style={style} className={props.className} onDoubleClick={handleDoubleClick}>{text ?? props.placeholder}</div>)
+                    : (<div style={style} className={props.className} onDoubleClick={handleDoubleClick}>&nbsp;</div>))
+            
+        //</div>
+        );
 };
 
 export default EditableText;

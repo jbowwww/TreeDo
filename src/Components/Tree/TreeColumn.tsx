@@ -22,7 +22,7 @@ const Column = (props: ColumnProps) => {
                     index={index}
                     path={newPath}
                     selected={props.selectedPath?.length === 0 ? false : newPath.every((p, i) => p === props.selectedPath![i])}
-                    onSelect={() => props.onSelectItem?.(newPath)} />);
+                    onSelect={(path: number[]) => { props.onSelectItem?.(path) }} />);
             })}
         </div>
     );
