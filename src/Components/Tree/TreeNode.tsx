@@ -1,10 +1,10 @@
+import { useState } from 'react';
 import { useTreeContext } from '../../State/Tree';
 import EditableText from '../Common/EditableText';
-import classNames from 'classnames';
-import './Tree.css';
 import HoverButton from '../Common/HoverButton';
 import { FaTrashCan } from 'react-icons/fa6';
-import { useState } from 'react';
+import classNames from 'classnames';
+import './Tree.css';
 
 export interface TreeNodeProps {
     title?: string;
