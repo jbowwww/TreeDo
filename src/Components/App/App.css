@@ -9,30 +9,31 @@
 .appbar {
     position: fixed;
     height: 138%;
-    width: 39px;
+    width: 41px;
     left: -32px;
     top: 0px;
     margin: 0px;
     padding-top: 12px;
     text-align: justify;
     background: rgb(24, 24, 24);
-    opacity: 60%;
-    z-index: -999;
-    transition: all ease 250ms;
+    opacity: 40%;
+    z-index: 999;
+    transition: all ease 350ms;
 }
 .appbar:hover {
+    opacity: 80%;
     transform: translateX(+32px);
     margin: 0px;
 }
-.appbar:hover {
-    transform: translateX(+32px);
-    margin: 0px;
-}
+
 .appbar .appbarButton {
-    margin: 3px;
+    border: 1px solid white;
+    border-radius: 4px;
+    margin: 4px;
     padding: 0px;
     width: 32px;
     height: 32px;
+    opacity: 100%;
 }
 .appbar .appbarButton * {
     margin: 0px;

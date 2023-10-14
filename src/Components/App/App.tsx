@@ -2,6 +2,7 @@ import Appbar from './Appbar';
 import { TreeColumnView } from '../Tree/TreeColumnView';
 import { useTree, TreeContextProvider } from '../../State/Tree';
 import { useWindowEvent } from '../../Hooks/useEvent.js';
+import './App.css';
 
 export const App = () => {
     const [treeState, treeActions] = useTree(items);
