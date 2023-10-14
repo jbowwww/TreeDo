@@ -5,9 +5,9 @@
 
 .treeColumnView {
     position: absolute;
-    margin-left: 38px;
-	width: 100%;
-	height: 100%;
+    left: 34px;
+    width: 96%;
+    height: 100%;
 }
 
 .treeColumnView1 {
@@ -21,12 +21,12 @@
 
 .treeColumnView2 {
     grid-gap: 14px;
-    grid-template-columns: 0.2fr 0.5fr 1fr 0fr 0.2fr;
+    grid-template-columns: 0.0fr 0.5fr 1fr 0fr 0.1fr;
 }
 
 .treeColumnView3 {
     grid-gap: 8px;
-    grid-template-columns: 0.1fr 0.5fr 0.6fr 1fr 0.1fr;
+    grid-template-columns: 0.00fr 0.5fr 0.6fr 1fr 0.0fr;
 }
 
 .treeColumn {
@@ -127,17 +127,19 @@ button.treeNodeAddbutton:focus-visible {
 }
 .treeNodeSelectedItem .description {
     min-height: 1.5em;
+    min-width: 14em;
     height: min-content;
     max-height: fit-content;
-    margin-bottom: -1px;
+    margin-bottom: -2px;
+    margin-right: -1px;
+    padding-right: 4px;
 }
 .treeNodeSelectedItem .description * {
     border: none;
-    top: 0px;
-    bottom: 0px;
-    left: 0px;
-    right: 0px;
+    min-height: 6em;
+    min-width: 100%;
     margin: 0px;
+    margin-bottom: -2px;
 }
 .treeNodeSelectedItem .description input::placeholder {
 }

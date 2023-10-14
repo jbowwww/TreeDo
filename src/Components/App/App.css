@@ -8,12 +8,11 @@
 
 .appbar {
     position: fixed;
-    height: 100%;
-    width: 3em;
-    left: -2em;
+    height: 138%;
+    width: 39px;
+    left: -32px;
     top: 0px;
     margin: 0px;
-    margin-right: 3em;
     padding-top: 12px;
     text-align: justify;
     background: rgb(24, 24, 24);
@@ -22,13 +21,24 @@
     transition: all ease 250ms;
 }
 .appbar:hover {
-    transform: translateX(+2em);
+    transform: translateX(+32px);
+    margin: 0px;
+}
+.appbar:hover {
+    transform: translateX(+32px);
+    margin: 0px;
 }
 .appbar .appbarButton {
-    margin: 0.4em;
+    margin: 3px;
     padding: 0px;
-    width: 2.6em;
-    height: 2.6em;
+    width: 32px;
+    height: 32px;
+}
+.appbar .appbarButton * {
+    margin: 0px;
+    padding: 0px;
+    width: 100%;
+    height: 100%;
 }
 .appbar .appbarButton svg {
     fill: lightgray;
@@ -37,10 +47,6 @@
     fill: yellow;
 }
 .appbar .appbarButton .icon {
-    margin: -2px;
-    padding: 0px;
-    width: 2.6em;
-    height: 2.6em;
 }
     
 .logo {
