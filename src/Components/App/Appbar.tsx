@@ -1,7 +1,7 @@
 import AppbarButton from './AppbarButton';
 import { FaRegSquarePlus, FaDownload } from 'react-icons/fa6';
 import { useTreeContext } from '../../State/Tree';
-import { downloadFile } from '../../Utility/downloadFile';
+import { downloadFile } from '../../Utility/File';
 import './App.css';
 
 export const Appbar = () => {
