@@ -1,7 +1,7 @@
 import Appbar from './Appbar';
 import { TreeColumnView } from '../Tree/TreeColumnView';
 import { useTree, TreeContextProvider } from '../../State/Tree';
-import { useEffect } from 'react';
+import { useWindowEvent } from '../../Hooks/useEvent.js';
 
 export const App = () => {
     const [treeState, treeActions] = useTree(items);
@@ -35,18 +35,9 @@ export const App = () => {
         readJsonStateFile(e.dataTransfer.files[0]);
     };
 
-    useEffect(() => {
-        window.addEventListener('drop', handleDrop);
-        return () => window.removeEventListener('drop', handleDrop);
-    }, []);
-    useEffect(() => {
-        window.addEventListener('dragenter', handleDragEnter);
-        return () => window.removeEventListener('dragenter', handleDragEnter);
-    }, []);
-    useEffect(() => {
-        window.addEventListener('dragover', handleDragOver);
-        return () => window.removeEventListener('dragover', handleDragOver);
-    }, []);
+    useWindowEvent('drop', handleDrop);
+    useWindowEvent('dragenter', handleDragEnter);
+    useWindowEvent('dragover', handleDragOver);
 
     return (
         <div className="app">
