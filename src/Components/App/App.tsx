@@ -4,7 +4,7 @@ import { useTree, TreeContextProvider } from '../../State/Tree';
 import './App.css';
 import { readJsonFile } from '../../Utility/File';
 
-import initialItems from '../../Data/debugData.json';
+import initialItems from '../../Data/debugItems.json';
 
 export const App = () => {
     const [treeState, treeActions] = useTree(initialItems);

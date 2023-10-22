@@ -26,7 +26,7 @@ export const readJsonFile: any = async (file: File) => {
         const reader = new FileReader();
         reader.onload = e => {
             if (!e.target) reject(`Error loading file '${file.name}'`);
-            resolve(JSON.parse(e.target!.result! as string);
+            resolve(JSON.parse(e.target!.result! as string));
         };
         reader.readAsText(file);
     });
