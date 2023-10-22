@@ -1,0 +1,58 @@
+﻿import React, { Dispatch, createContext, useContext, useMemo, useState } from 'react';
+
+export type TreeNode<N> = {
+    nodes?: TreeNode<N>[];
+} & {
+    [k in keyof N]: N[k];
+};
+
+export type TreeState<N> = TreeNode<N>[];
+
+export const useTreeState = <N>(initialState: TreeState<N>): [TreeState<N>, TreeActions<N>] => {
+    const [state, setState] = useState<TreeState<N>>(initialState);
+    const actions = useMemo(() => new TreeActions<N>(state, setState), [state, setState]);
+    return [state, actions];
+};
+
+// eslint-disable-next-line  @typescript-eslint/no-explicit-any
+export const TreeContext = createContext<[TreeState<any>, TreeActions<any>] | null>(null);
+export const useTreeContext = <N>() => useContext<[TreeState<N>, TreeActions<N>]>(
+    TreeContext as React.Context<[TreeState<N>, TreeActions<N>]>);
+
+export class TreeActions<N> {
+    constructor(
+        public readonly state: TreeState<N>,
+        public readonly setState: Dispatch<React.SetStateAction<TreeState<N>>>
+    ) { }
+
+    getNode(path: number[]): TreeNode<N> | undefined {
+        return path.reduce<TreeNode<N> | undefined>((acc, pathPart) => acc?.nodes?.[pathPart], { nodes: this.state } as TreeNode<N>);
+    }
+
+    private updateNode(path: number[], nodeUpdater: (node: TreeNode<N>) => TreeNode<N>): TreeState<N> {
+        const nodesVisitor = (relativePath: number[], nodes: TreeNode<N>[]): TreeNode<N>[] =>
+            relativePath.length === 0 ? (nodeUpdater({ nodes } as TreeNode<N>).nodes ?? []) :
+                nodes.map((subNode, subNodeIndex) => subNodeIndex === relativePath.at(0) ?
+                    { ...subNode, nodes: nodesVisitor(relativePath.slice(1), subNode.nodes ?? []) } : subNode);
+        const newState = nodesVisitor(path, this.state);
+        this.setState(newState ?? this.state);
+        return newState ?? this.state;
+    }
+
+    clear   (path: number[])                    { this.updateNode(path, node => ({ ...node, nodes: [] }));                                                      }
+    remove(path: number[]) {
+        const removeItem = path.pop();
+        if (removeItem)
+            this.updateNode(path, n => ({
+                ...n, nodes: n.nodes?.splice(removeItem)
+            }));
+    }
+    add     (path: number[], node: TreeNode<N>)    { this.updateNode(path, (n: TreeNode<N>) => ({ ...n, nodes: [...(n.nodes ?? []), node] }));                        }
+    update  (path: number[], node: TreeNode<N>)    { this.updateNode(path, () => node);                                                                        }
+
+    toJSON(/*options: any*/) {
+        const jsonData = JSON.stringify(this.state);
+        window.document.textContent = jsonData;
+        //const jsonFile = jsonData, "tree.json", { endings: "transparent", type: "text/json" });\
+    }
+}
