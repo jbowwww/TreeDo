@@ -30,8 +30,6 @@ export class TreeNode<N> extends TreeState<N> implements TreeNodeData<N> {
         this.value = value;
     }
 
-    valueOf(): N { return this.value; }     // this might let me use both Objects and primitives for N e.g. string, while still having child nodes (without having to do node.value)
-
     getByPath(path: number[]): TreeNode<N> | undefined {
         return path.length === 0 ? this : this.children?.[path[0]].getByPath(path.slice(1));
     }
