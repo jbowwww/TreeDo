@@ -1,22 +1,24 @@
 ﻿import { useState } from 'react';
-import Column from './TreeColumn';
-import { useTreeContext } from '../../State/Tree';
+import Column from './Column';
+import { useTreeContext } from '../../State/Tree/Context';
 import classNames from 'classnames';
+import { ItemNode } from "../App/App";
 
-export interface TreeColumnViewProps {
+export interface ColumnViewProps {
     basePath?: number[];
-};
+}
 
-export const TreeColumnView = ({ basePath = [] }: TreeColumnViewProps) => {
+export const ColumnView = ({ basePath = [] }: ColumnViewProps) => {
     // currently selected (absolute) path describes 0 or more selected items selected in each column, by removing
     // first basePath.length items in selectedPath, the next items (if they exist) in the path array are the column selections
     // so selectedPath[N] is the selected item index in column N
     const [selectedPath, setSelectedPath] = useState<number[]>([]);
-    const [/*treeState*/, treeDispatch] = useTreeContext();
+    const [treeState/*, treeDispatch*/] = useTreeContext<ItemNode>();
     const lastColumnDepth = selectedPath.length - basePath.length;
-    const lastColumnDisplay = (treeDispatch?.getNode(selectedPath)?.nodes?.length ?? 0) > 0;
+    const lastColumnDisplay = (treeState?.getByPath(selectedPath)?.children?.length ?? 0) > 0;
     const columnDisplayCount = lastColumnDepth + (lastColumnDisplay ? 1 : 0);
 
+    const sanitisePath = (path: number[]) => path.filter(p => p !== undefined);
     const handleSelectedItem = (newRelativePath: number[]) => {
         setSelectedPath([...basePath, ...newRelativePath]);
     };
@@ -35,12 +37,12 @@ export const TreeColumnView = ({ basePath = [] }: TreeColumnViewProps) => {
                     onSelectItem={handleSelectedItem}
                 />
                 <Column
-                    path={basePath.concat(selectedPath[0])}
+                    path={columnDisplayCount < 2 ? undefined : sanitisePath([...basePath, selectedPath[0]])}
                     selectedPath={selectedPath}
                     onSelectItem={handleSelectedItem}
                 />
                 <Column
-                    path={basePath.concat(selectedPath[0], selectedPath[1])}
+                    path={columnDisplayCount < 3 ? undefined : sanitisePath([...basePath, selectedPath[0], selectedPath[1]])}
                     selectedPath={selectedPath}
                     onSelectItem={handleSelectedItem}
                 />

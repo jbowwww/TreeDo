@@ -1,13 +1,17 @@
 import Appbar from './Appbar';
-import { TreeColumnView } from '../Tree/TreeColumnView';
-import { useTree, TreeContextProvider } from '../../State/Tree';
+import { ColumnView } from '../Tree/ColumnView';
+import { useTreeState } from '../../State/Tree/index';
+import { TreeContext } from '../../State/Tree/Context';
 import './App.css';
 import { readJsonFile } from '../../Utility/File';
 
 import initialItems from '../../Data/debugItems.json';
+//import { TreeNode } from "../../State/Tree/State";
+
+export type ItemNode = { title?: string, description?: string };
 
 export const App = () => {
-    const [treeState, treeActions] = useTree(initialItems);
+    const [treeState, treeActions] = useTreeState<ItemNode>(initialItems);
 
     const handleDragOver = (e: React.DragEvent) => { e.preventDefault(); };
     const handleDrop = async (e: React.DragEvent) => {
@@ -20,10 +24,10 @@ export const App = () => {
 
     return (
         <div className="app" onDragOver={handleDragOver} onDrop={handleDrop}>
-            <TreeContextProvider value={[treeState, treeActions]}>
+            <TreeContext.Provider value={[treeState, treeActions]}>
                 <Appbar />
-                <TreeColumnView />
-            </TreeContextProvider>
+                <ColumnView />
+            </TreeContext.Provider>
         </div>
     );
 };
