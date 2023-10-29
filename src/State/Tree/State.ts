@@ -7,14 +7,26 @@ export interface TreeStateData<N> {
 }
 
 export class TreeState<N> implements TreeStateData<N> {
-    children?: TreeNode<N>[];
+    children?: TreeNode<N>[] = [];
+
     constructor(children: TreeNodeData<N>[] = [] ) {
         this.children = children.map(child => new TreeNode<N>(child));
     }
+
     getByPath(path: number[]): TreeNode<N> | TreeState<N> | undefined {
         if (path.length > 0)
             return this.children?.[path[0]].getByPath(path.slice(1));
         return this;
+    }
+
+    toJSON(key: string) {
+        const { children, ...rest } = this;
+        return key === "" && Object.keys(rest).length === 0 ?
+            this.children :
+            {
+                ...rest,
+                ...(children?.length ?? 0 > 0 ? { children } : {})
+            };
     }
 }
 
