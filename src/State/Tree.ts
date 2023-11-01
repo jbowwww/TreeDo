@@ -39,27 +39,27 @@ export class TreeActions<N> {
     // path must have .length  > 0
     // The tree structure overall is awkward when state cannot be mutated, as any node that is modified, or any parent nodes, must be new copies
     // (unmodified nodes and parents are ok to reuse)
-    public update(path: number[], nodeUpdater: TreeNode<N> | TreeNodeUpdater<N>): TreeRootNodes<N> {
-        const updater = isTreeNode(nodeUpdater) ? () => nodeUpdater : nodeUpdater;
+    public update(path: number[], update: TreeNode<N> | TreeNodeUpdater<N>): TreeRootNodes<N> {
+        const updater = isTreeNode(update) ? () => update : update;
         const nodesVisitor = (path: number[], nodes?: TreeNode<N>[]): TreeNode<N>[] | undefined =>
             nodes?.map((node, nodeIndex) => nodeIndex === path[0] ? path.length === 1 ?
                 updater(node) : ({ ...node, nodes: nodesVisitor(path.slice(1), node.nodes) }) : node) ?? undefined;
         const newState = path.length === 0 ?
-                isTreeNode(nodeUpdater) ? (nodeUpdater as TreeNode<N>).nodes :
-                (nodeUpdater as TreeNodeUpdater<N>)({ nodes: this.state } as TreeNode<N>).nodes :
+                isTreeNode(update) ? (update as TreeNode<N>).nodes :
+                (update as TreeNodeUpdater<N>)({ nodes: this.state } as TreeNode<N>).nodes :
             nodesVisitor(path, this.state);
         this.setState(newState!);
         return newState!;
     }
 
     // reset to a whole new tree
-    public reset(state: TreeRootNodes<N>) {
+    public reset(state: TreeRootNodes<N> = []) {
         this.setState(state);
     }
 
     // clear a node's sub items
-    public clear(path: number[]) {
-        this.update(path, node => ({ ...node, nodes: [] }));
+    public clear(path: number[], clear: TreeNode<N>[] = []) {
+        this.update(path, node => ({ ...node, nodes: clear }));
     }
 
     // remove a node
@@ -85,6 +85,17 @@ export class TreeActions<N> {
         }
         const insertIndex = path[path.length - 1];
         this.update(path.slice(0, -1), n => ({ ...n, nodes: [...(n.nodes?.slice(0, insertIndex) ?? []), node, ...(n.nodes?.slice(insertIndex) ?? [])] }));
+    }
+
+    // return an object that will work on a specific node path only
+    public node(path: number[]) {
+        return {
+            remove: () => this.remove(path),
+            update: (update: TreeNode<N> | TreeNodeUpdater<N>) => this.update(path, update),
+            clear: (clear: TreeNode<N>[] = []) => this.clear(path, clear),
+            add: (add: TreeNode<N>) => this.add(path, add),
+            insert: (insert: TreeNode<N>) => this.insert(path, insert),
+        };
     }
 
     public toJSON(/*options: any*/) {

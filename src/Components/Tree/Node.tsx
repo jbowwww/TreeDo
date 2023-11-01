@@ -22,16 +22,17 @@ export interface NodeRenderProps {
 }
 
 export const Node = (props: NodeProps & NodeRenderProps) => {
-    const [/*treeState*/, treeDispatch] = useTreeContext();
+    const [/*treeState*/, treeActions] = useTreeContext();
+    const nodeActions = treeActions.node(props.path);
 
-    const makeHandleChange = (key: string) => (value: string) => treeDispatch?.update(props.path, {
+    const makeHandleChange = (key: string) => (value: string) => nodeActions.update({
         title: props.title,
         description: props.description,
         nodes: props.nodes,
         [key]: value
     });
-    const handleAddSubItem = () => { treeDispatch?.add(props.path, { title: "New Item", description: "fkng shoot me" }); };
-    const handleRemoveItem = () => { treeDispatch?.remove(props.path); setTimeout(() => props.onSelect?.(props.path.slice(0, -1)), 0); };
+    const handleAddSubItem = () => { nodeActions.add({ title: "New Item", description: "fkng shoot me" }); };
+    const handleRemoveItem = () => { nodeActions.remove(); setTimeout(() => props.onSelect?.(props.path.slice(0, -1)), 0); };
     const handleSelectItem = () => { props.onSelect?.(props.path); };
 
     const [/*btnHoverRemove*/, setBtnHoverRemove] = useState<boolean>(false);
