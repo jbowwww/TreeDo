@@ -31,7 +31,8 @@ export const Node = (props: NodeProps & NodeRenderProps) => {
         [key]: value
     });
     const handleAddSubItem = () => { treeDispatch?.add(props.path, { title: "New Item", description: "fkng shoot me" }); };
-    const handleRemoveItem = () => { treeDispatch?.remove(props.path); props.onSelect?.(props.path.slice(0, -1)); };
+    const handleRemoveItem = () => { treeDispatch?.remove(props.path); setTimeout(() => props.onSelect?.(props.path.slice(0, -1)), 0); };
+    const handleSelectItem = () => { props.onSelect?.(props.path); };
 
     const [/*btnHoverRemove*/, setBtnHoverRemove] = useState<boolean>(false);
     const [btnHoverAdd, setBtnHoverAdd] = useState<boolean>(false);
@@ -39,7 +40,7 @@ export const Node = (props: NodeProps & NodeRenderProps) => {
     return (
         <div
             className={classNames({ treeNodeItem: true, treeNodeSelectedItem: props.selected ?? false })}
-            onClick={() => props.onSelect?.(props.path)}
+            onClick={handleSelectItem}
         >
             <div className="title" style={{ display: "grid", gridTemplateColumns: "1fr max-content" }}>
                 <EditableText value={props.title} placeholder="Item Title" onBlur={makeHandleChange("title")} />

@@ -20,7 +20,7 @@ const Column = (props: ColumnProps) => {
                     newPath.every((p, i) => p === props.selectedPath![i]);
                 return (<Node
                     {...item}
-                    key={`TN${props.path?.map(p => "-" + p)}-${index}`}
+                    key={(item.title ?? "_blank_") + (item.description ?? "_blank_") + (isSelected ? "1" : "0") + (item.nodes?.length ?? 0) + index}
                     index={index}
                     path={newPath}
                     selected={isSelected}
