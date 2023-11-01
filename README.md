@@ -9,13 +9,13 @@
 ## TODO 
 
 ### General
-- Fix remove node action
+- [X] Fix remove node action
 
 ### JSON / Data
-- Refactor JSON load/save code out of App.tsx into /Utility/something
-- Add error checking to JSON loading code
-- Allow saving into localStorage
-	- maybe make that default but download/upload JSON is called export/import
+- [X] Refactor JSON load/save code out of App.tsx into /Utility/something
+- [ ] Add error checking to JSON loading code
+- [ ] Allow saving into localStorage
+	- [ ] maybe make that default but download/upload JSON is called export/import
 
 ### GitHub
 - Either check privacy settings on your github, to make anything you don't explicitly choose otherwise, to be private (preferred option)
