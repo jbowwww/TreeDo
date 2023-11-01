@@ -24,8 +24,12 @@ export interface NodeRenderProps {
 export const Node = (props: NodeProps & NodeRenderProps) => {
     const [/*treeState*/, treeDispatch] = useTreeContext();
 
-    const handleChangeTitle = (value: string) => treeDispatch?.update(props.path, { title: value, description: props.description, nodes: props.nodes });
-    const handleChangeDescription = (value: string) => treeDispatch?.update(props.path, { title: props.title, description: value, nodes: props.nodes });
+    const makeHandleChange = (key: string) => (value: string) => treeDispatch?.update(props.path, {
+        title: props.title,
+        description: props.description,
+        nodes: props.nodes,
+        [key]: value
+    });
     const handleAddSubItem = () => { treeDispatch?.add(props.path, { title: "New Item", description: "fkng shoot me" }); };
     const handleRemoveItem = () => { treeDispatch?.remove(props.path); props.onSelect?.(props.path.slice(0, -1)); };
 
@@ -38,7 +42,7 @@ export const Node = (props: NodeProps & NodeRenderProps) => {
             onClick={() => props.onSelect?.(props.path)}
         >
             <div className="title" style={{ display: "grid", gridTemplateColumns: "1fr max-content" }}>
-                <EditableText value={props.title} placeholder="Item Title" onBlur={handleChangeTitle} />
+                <EditableText value={props.title} placeholder="Item Title" onBlur={makeHandleChange("title")} />
                 <span className="actionButtons">
                     <HoverButton onClick={handleRemoveItem} onHoverChange={setBtnHoverRemove}><FaTrashCan style={{ "marginTop": "2px" }} /></HoverButton>
                     <HoverButton onClick={handleAddSubItem} onHoverChange={setBtnHoverAdd}>
@@ -47,7 +51,7 @@ export const Node = (props: NodeProps & NodeRenderProps) => {
                 </span>
             </div>
             <div className="description">
-                <EditableText multiple={true} value={props.description} placeholder="Item Description" onBlur={handleChangeDescription} />
+                <EditableText multiple={true} value={props.description} placeholder="Item Description" onBlur={makeHandleChange("description")} />
             </div>
         </div>
     );
