@@ -1,16 +1,19 @@
 import Appbar from './Appbar';
 import { readJsonFile } from '../../Utility/File';
-import { useTreeState } from '../../State/Tree';
+import { TreeRootNodes, useTreeState } from '../../State/Tree';
 import { TreeContext } from "../../Context/Tree";
 import { ColumnView } from '../Tree/ColumnView';
 import initialItems from '../../Data/debugItems.json';
 import './App.css';
+import { useEffect } from "react";
 
 export type ItemNode = { title?: string, description?: string };
 
 export const App = () => {
-    const [treeState, treeActions] = useTreeState<ItemNode>(initialItems);
-
+    const [treeState, treeActions] = useTreeState<ItemNode>(JSON.parse(sessionStorage.getItem("init")!) as TreeRootNodes<ItemNode> ?? initialItems);
+    useEffect(() => {
+        sessionStorage.setItem("init", JSON.stringify(treeState));
+    }, [ treeState ]);
     const handleDragOver = (e: React.DragEvent) => { e.preventDefault(); };
     const handleDrop = async (e: React.DragEvent) => {
         e.preventDefault();
