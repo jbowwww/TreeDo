@@ -10,9 +10,9 @@ import { useEffect } from "react";
 export type ItemNode = { title?: string, description?: string };
 
 export const App = () => {
-    const [treeState, treeActions] = useTreeState<ItemNode>(JSON.parse(sessionStorage.getItem("init")!) as TreeRootNodes<ItemNode> ?? initialItems);
+    const [treeState, treeActions] = useTreeState<ItemNode>(JSON.parse(localStorage.getItem("init")!) as TreeRootNodes<ItemNode> ?? initialItems);
     useEffect(() => {
-        sessionStorage.setItem("init", JSON.stringify(treeState));
+        localStorage.setItem("init", JSON.stringify(treeState));
     }, [ treeState ]);
     const handleDragOver = (e: React.DragEvent) => { e.preventDefault(); };
     const handleDrop = async (e: React.DragEvent) => {
