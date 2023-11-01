@@ -39,8 +39,7 @@ export class TreeActions<N> {
     public getNodeByPath = (path: number[]): TreeNode<N> => {
         if (!path || path.length === 0)
             throw new Error(`TreeActions.getNodeByPath(${path ? "[" + path.join(",") + "]" : "undefined"}): path is not defined or empty`);
-        path = [...path];
-        return path.reduce<TreeNode<N>>((node, p) => (node.nodes ?? [])?.[p], this.state[path.shift()!]);
+        return path.slice(1).reduce<TreeNode<N>>((node, p) => (node.nodes ?? [])?.[p], this.state[path[0]]);
     }
 
     public clear(path: number[]) {
@@ -58,7 +57,11 @@ export class TreeActions<N> {
         }
         const removeIndex = path.pop()!;
         this.setState(path.length === 0 ?
-            state => state.splice(removeIndex, 1) :
+            state => {
+                const newState = [...state];
+                newState.splice(removeIndex, 1);
+                return newState;
+            } :
             this.updateNode(path, n => ({ ...n, children: n.nodes?.splice(removeIndex, 1) }))
         );
     }
