@@ -1,7 +1,6 @@
 import Node from './Node';
-import { useTreeContext } from '../../State/Tree/Context';
+import { useTreeContext } from "../../Context/Tree";
 import './Tree.css';
-import { ItemNode } from "../App/App";
 
 export interface ColumnProps {
     path?: number[];                // (absolute) root path for this column - displays sub items underneath this path
@@ -10,21 +9,22 @@ export interface ColumnProps {
 }
 
 const Column = (props: ColumnProps) => {
-    const [treeState/*, treeDispatch*/] = useTreeContext<ItemNode>();
-    const items = props.path ? (treeState.getByPath(props.path)?.children ?? []) : [];
+    const [treeState, treeActions] = useTreeContext();
+    const items = props.path ? props.path.length > 0 ? (treeActions.getNodeByPath(props.path)?.nodes ?? []) : treeState : [];
 
     return (
         <div className="treeColumn">
             {items?.map((item, index) => {
                 const newPath = [...(props.path ?? []), index];
+                const isSelected = ((props.selectedPath === undefined) || ((props.selectedPath?.length ?? 0) < newPath.length)) ? false :
+                    newPath.every((p, i) => p === props.selectedPath![i]);
                 return (<Node
-                    {...item.value}
-                    children={item.children}
+                    {...item}
                     key={`TN${props.path?.map(p => "-" + p)}-${index}`}
                     index={index}
                     path={newPath}
-                    selected={props.selectedPath?.length === 0 ? false : newPath.every((p, i) => p === props.selectedPath![i])}
-                    onSelect={(/*path: number[]*/) => { props.onSelectItem?.(newPath) }} />);
+                    selected={isSelected}
+                    onSelect={(path: number[]) => { props.onSelectItem?.(path) }} />);
             })}
         </div>
     );

@@ -1,14 +1,13 @@
 import AppbarButton from './AppbarButton';
-import { FaRegSquarePlus, FaDownload } from 'react-icons/fa6';
-import { useTreeContext } from '../../State/Tree/Context';
+import { useTreeContext } from "../../Context/Tree";
 import { downloadFile } from '../../Utility/File';
+import { FaRegSquarePlus, FaDownload } from 'react-icons/fa6';
 import './App.css';
-import { ItemNode } from "./App";
 
 export const Appbar = () => {
-    const [state, dispatch] = useTreeContext<ItemNode>();
-    const handleClickAdd = () => { dispatch.add([], { value: {} }); };
-    const handleClickDownload = () => { downloadFile({ data: JSON.stringify(state), fileName: 'treedo.json', fileType: 'text/json', }); };
+    const [treeState, treeActions] = useTreeContext();
+    const handleClickAdd = () => { treeActions.add([], { title: "New Node", description: "From appbar" }); };
+    const handleClickDownload = () => { downloadFile({ data: JSON.stringify(treeState), fileName: 'treedo.json', fileType: 'text/json', }); };
     return (
         <div className="appbar">
             <AppbarButton text="Add" icon={FaRegSquarePlus} onClick={handleClickAdd} />

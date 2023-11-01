@@ -20,7 +20,7 @@ export const downloadFile = ({
     a.remove();
 }
 
-export const readJsonFile: any = async (file: File) => {
+export const readJsonFile = async <N>(file: File): Promise<N> => {
     return new Promise((resolve, reject) => {
         if (file.type.indexOf('json') < 0) reject(`Only accept text/json files! file '${file.name}' has type '${file.type}'`);
         const reader = new FileReader();

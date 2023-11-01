@@ -1,12 +1,10 @@
 import Appbar from './Appbar';
-import { ColumnView } from '../Tree/ColumnView';
-import { useTreeState } from '../../State/Tree/index';
-import { TreeContext } from '../../State/Tree/Context';
-import './App.css';
 import { readJsonFile } from '../../Utility/File';
-
+import { useTreeState } from '../../State/Tree';
+import { TreeContext } from "../../Context/Tree";
+import { ColumnView } from '../Tree/ColumnView';
 import initialItems from '../../Data/debugItems.json';
-//import { TreeNode } from "../../State/Tree/State";
+import './App.css';
 
 export type ItemNode = { title?: string, description?: string };
 

@@ -1,17 +1,17 @@
 import { useState } from 'react';
-import { useTreeContext } from '../../State/Tree/Context';
+import { ItemNode } from "../App/App";
 import EditableText from '../Common/EditableText';
 import HoverButton from '../Common/HoverButton';
+import { useTreeContext } from "../../Context/Tree";
+import { TreeNode } from "../../State/Tree";
 import { FaTrashCan } from 'react-icons/fa6';
 import classNames from 'classnames';
 import './Tree.css';
-import { ItemNode } from "../App/App";
-import { TreeNodeData } from "../../State/Tree/State";
 
 export interface NodeProps {
     title?: string;
     description?: string;
-    children?: TreeNodeData<ItemNode>[];
+    nodes?: TreeNode<ItemNode>[];
 }
 
 export interface NodeRenderProps {
@@ -22,11 +22,11 @@ export interface NodeRenderProps {
 }
 
 export const Node = (props: NodeProps & NodeRenderProps) => {
-    const [/*treeState*/, treeDispatch] = useTreeContext<ItemNode>();
+    const [/*treeState*/, treeDispatch] = useTreeContext();
 
-    const handleChangeTitle = (value: string) => treeDispatch?.update(props.path, { value: { title: value, description: props.description }, children: props.children });
-    const handleChangeDescription = (value: string) => treeDispatch?.update(props.path, { value: { title: props.title, description: value }, children: props.children });
-    const handleAddSubItem = () => { treeDispatch?.add(props.path, { value: { title: "New Item" } }); props.onSelect?.(props.path); };
+    const handleChangeTitle = (value: string) => treeDispatch?.update(props.path, { title: value, description: props.description, nodes: props.nodes });
+    const handleChangeDescription = (value: string) => treeDispatch?.update(props.path, { title: props.title, description: value, nodes: props.nodes });
+    const handleAddSubItem = () => { treeDispatch?.add(props.path, { title: "New Item", description: "fkng shoot me" }); };
     const handleRemoveItem = () => { treeDispatch?.remove(props.path); props.onSelect?.(props.path.slice(0, -1)); };
 
     const [/*btnHoverRemove*/, setBtnHoverRemove] = useState<boolean>(false);
@@ -42,7 +42,7 @@ export const Node = (props: NodeProps & NodeRenderProps) => {
                 <span className="actionButtons">
                     <HoverButton onClick={handleRemoveItem} onHoverChange={setBtnHoverRemove}><FaTrashCan style={{ "marginTop": "2px" }} /></HoverButton>
                     <HoverButton onClick={handleAddSubItem} onHoverChange={setBtnHoverAdd}>
-                        <span style={{ "paddingTop": "3px" }}>{btnHoverAdd ? "+" : props.children?.length ?? "-"}</span>
+                        <span style={{ "paddingTop": "3px" }}>{btnHoverAdd ? "+" : props.nodes?.length ?? "-"}</span>
                     </HoverButton>
                 </span>
             </div>
