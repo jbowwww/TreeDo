@@ -1,35 +1,35 @@
 import { useMemo, useState, Dispatch } from "react";
 
-export type TreeNode<N> = N & {
+export type TreeNodeBase<N> = {
     nodes?: TreeNode<N>[];
 };
-export type TreeRootNodes<N> = TreeNode<N>[];
-export type TreeNodeUpdater<N> = (node: TreeNode<N>) => TreeNode<N>;
+export type TreeNode<N> = N & TreeNodeBase<N>;
+export type TreeRoot<N, R = object> = R & TreeNodeBase<N>;
+export type TreeNodeUpdater<N> = ((node: TreeNodeBase<N>) => TreeNodeBase<N>);
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-export const isTreeNode = <N = unknown>(node: any): node is TreeNode<N> => typeof node === 'object' && Array.isArray(node?.nodes);
+const isTreeNode = <N = unknown>(node: any): node is TreeNode<N> => typeof node === 'object' && Array.isArray(node?.nodes);
+// Don't expect to use these outside this file without trouble, hence no exporting
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-export const isTreeRootNodes = <N = unknown>(nodes: any): nodes is TreeRootNodes<N> => Array.isArray(nodes) && nodes.every(node => isTreeNode(node));
+const isTreeNodeRoot = <N = unknown, R = object>(node: any): node is TreeRoot<N, R> => typeof node === 'object' && Array.isArray(node?.nodes);
 
-export const useTreeState = <N>(initialState: TreeRootNodes<N>): [TreeRootNodes<N>, TreeActions<N>] => {
-    const [state, setState] = useState<TreeRootNodes<N>>(initialState);
-    const actions = useMemo(() => new TreeActions<N>(state, setState), [state, setState]);
+export const useTreeState = <N, R extends object = object>(initialState: TreeRoot<N, R>): [TreeRoot<N, R>, TreeActions<N, R>] => {
+    const [state, setState] = useState<TreeRoot<N, R>>(initialState);
+    const actions = useMemo(() => new TreeActions<N, R>(state, setState), [state, setState]);
     return [state, actions];
 };
 
-export class TreeActions<N> {
+export class TreeActions<N, R = object> {
     // technically this means N exists as a singular root at the tree, and I think it could be used like this, but really I'm ignoring
     // all members of this.state except for .nodes, treating the tree like its root is a list of nodes (N & { nodes: TreeNode<N>[] })
     constructor(
-        public readonly state: TreeRootNodes<N>,
-        public readonly setState: Dispatch<React.SetStateAction<TreeRootNodes<N>>>
+        public readonly state: TreeRoot<N, R>,
+        public readonly setState: Dispatch<React.SetStateAction<TreeRoot<N, R>>>
     ) { }
 
     // path must have .length > 0
     public getNodeByPath = (path: number[]): TreeNode<N> => {
-        if (!path || path.length === 0)
-            throw new Error(`TreeActions.getNodeByPath(${path ? "[" + path.join(",") + "]" : "undefined"}): path is not defined or empty`);
-        return path.slice(1).reduce<TreeNode<N>>((node, p) => (node.nodes ?? [])?.[p], this.state[path[0]]);
+        return path.reduce<TreeNodeBase<N>>((node, p) => (node.nodes ?? [])?.[p], this.state) as TreeNode<N>;
     }
 
     // Update a node at a given path, either with a supplied new node or an updater function that takes the current node and returns a new one
@@ -39,22 +39,27 @@ export class TreeActions<N> {
     // path must have .length  > 0
     // The tree structure overall is awkward when state cannot be mutated, as any node that is modified, or any parent nodes, must be new copies
     // (unmodified nodes and parents are ok to reuse)
-    public update(path: number[], update: TreeNode<N> | TreeNodeUpdater<N>): TreeRootNodes<N> {
+    public update(path: number[], update: TreeNode<N> | TreeRoot<N, R> | TreeNodeUpdater<N>): TreeRoot<N, R> {
         const updater = isTreeNode(update) ? () => update : update;
         const nodesVisitor = (path: number[], nodes?: TreeNode<N>[]): TreeNode<N>[] | undefined =>
-            nodes?.map((node, nodeIndex) => nodeIndex === path[0] ? path.length === 1 ?
-                updater(node) : ({ ...node, nodes: nodesVisitor(path.slice(1), node.nodes) }) : node) ?? undefined;
-        const newState = path.length === 0 ?
-                isTreeNode(update) ? (update as TreeNode<N>).nodes :
-                (update as TreeNodeUpdater<N>)({ nodes: this.state } as TreeNode<N>).nodes :
-            nodesVisitor(path, this.state);
-        this.setState(newState!);
-        return newState!;
+            nodes?.map<TreeNode<N>>((node, nodeIndex) =>
+                nodeIndex === path[0] ?
+                    path.length === 1 ?
+                        updater(node) as TreeNode<N> :
+                        ({ ...node, nodes: nodesVisitor(path.slice(1), node.nodes) } as TreeNode<N>) :
+                    node)
+            ?? undefined;
+        const newState: TreeRoot<N, R> = path.length === 0 ?
+            isTreeNodeRoot(update) ? (update as TreeRoot<N, R>) :
+                (update as TreeNodeUpdater<N>)({ ...this.state, nodes: this.state.nodes as TreeNode<N>[] }) as TreeRoot<N, R> :
+            { ...this.state, nodes: nodesVisitor(path, this.state.nodes) };
+        this.setState(newState as TreeRoot<N, R>);
+        return newState! as TreeRoot<N, R>;
     }
 
     // reset to a whole new tree
-    public reset(state: TreeRootNodes<N> = []) {
-        this.setState(state);
+    public reset(state: TreeNodeBase<N> = { nodes: [] }) {
+        this.setState(state as TreeRoot<N, R>);
     }
 
     // clear a node's sub items
@@ -74,7 +79,7 @@ export class TreeActions<N> {
 
     // add a sub item
     public add(path: number[], node: TreeNode<N>) {
-        this.update(path, (n: TreeNode<N>) => ({ ...n, nodes: [...(n.nodes ?? []), node] }));
+        this.update(path, n => ({ ...n, nodes: [...(n.nodes ?? []), node] }));
     }
 
     // insert an item at a given path (sibling items after insertion point increase in index)

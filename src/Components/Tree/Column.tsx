@@ -9,8 +9,8 @@ export interface ColumnProps {
 }
 
 const Column = (props: ColumnProps) => {
-    const [treeState, treeActions] = useTreeContext();
-    const items = props.path ? props.path.length > 0 ? (treeActions.getNodeByPath(props.path)?.nodes ?? []) : treeState : [];
+    const [/*treeState*/, treeActions] = useTreeContext();
+    const items = props.path ? treeActions.getNodeByPath(props.path)?.nodes : [];
 
     return (
         <div className="treeColumn">
