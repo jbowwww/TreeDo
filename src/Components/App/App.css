@@ -48,6 +48,10 @@
     fill: yellow;
 }
 .appbar .appbarButton .icon {
+  --fa-border-color: none;
+}
+.appbar .appbarButton .icon:checked {
+  --fa-border-color: white;
 }
     
 .logo {

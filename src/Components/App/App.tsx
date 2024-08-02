@@ -1,19 +1,20 @@
-import Appbar from './Appbar';
-import { readJsonFile } from '../../Utility/File';
-import { useTreeState } from '../../State/Tree';
-import { TreeContext } from "../../Context/Tree";
-import { ColumnView } from '../Tree/ColumnView';
-import initialItems from '../../Data/debugItems.json';
-import './App.css';
 import { useEffect } from "react";
+import { TreeContext } from "../../Context/Tree";
+import initialItems from '../../Data/debugItems.json';
+import { useTreeState } from '../../State/Tree';
+import { readJsonFile } from '../../Utility/File';
+import { ColumnView } from '../Tree/ColumnView';
+import './App.css';
+import Appbar from './Appbar';
 
 export type ItemNode = { title?: string, description?: string };
 const resetStorage = false;
 
 export const App = () => {
     const [treeState, treeActions] = useTreeState<ItemNode>(
-        !resetStorage ? JSON.parse(localStorage.getItem("init")!) : { nodes: initialItems } 
+        (resetStorage ? JSON.parse(localStorage.getItem("init")!) : null) ?? { nodes: initialItems }
     );
+    
     useEffect(() => {
         localStorage.setItem("init", JSON.stringify(treeState));
     }, [ treeState ]);

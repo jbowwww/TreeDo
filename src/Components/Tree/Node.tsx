@@ -25,7 +25,7 @@ export const Node = (props: NodeProps & NodeRenderProps) => {
     const [/*treeState*/, treeActions] = useTreeContext();
     const nodeActions = treeActions.node(props.path);
 
-    const makeHandleChange = (key: string) => (value: string) => nodeActions.update({
+    const makeHandleChange = (key: string) => (value: string) => ({
         title: props.title,
         description: props.description,
         nodes: props.nodes,
