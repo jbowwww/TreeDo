@@ -25,6 +25,11 @@
     transform: translateX(+32px);
     margin: 0px;
 }
+.appbar.hover {
+  opacity: 80%;
+  transform: translateX(+32px);
+  margin: 0px;
+}
 
 .appbar .appbarButton {
     border: 1px solid white;
@@ -52,6 +57,7 @@
 }
 .appbar .appbarButton .icon:checked {
   --fa-border-color: white;
+  border: 1px solid white;
 }
     
 .logo {

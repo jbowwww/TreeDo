@@ -17,7 +17,7 @@ export class AppbarActions {
         public readonly setState: Dispatch<React.SetStateAction<AppbarState>>
     ) { }
 
-    public setPinned = (pinned: boolean) => this.state.pinned = pinned;
-    public togglePin = () => this.state.pinned = !this.state.pinned;
+    public setPinned = (pinned: boolean) => this.setState((/* state: AppbarState */) => ({ pinned }));
+    public togglePin = () => this.setState((state: AppbarState) => ({ pinned: !state.pinned }));
 
 };
