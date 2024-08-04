@@ -1,5 +1,4 @@
 import { Context, createContext, useContext } from "react";
-
 import { AppbarActions, AppbarState } from "../State/Appbar";
 
 export type AppbarContextType = [AppbarState, AppbarActions];

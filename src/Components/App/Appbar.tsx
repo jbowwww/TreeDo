@@ -1,4 +1,5 @@
-import { FaDownload, FaRegSquarePlus, FaThumbtack } from 'react-icons/fa6';
+import { FaDownload, FaSquarePlus/* , FaThumbtack */ } from 'react-icons/fa6';
+import { BsPinFill, BsPinAngleFill } from 'react-icons/bs';
 import { useTreeContext } from "../../Context/Tree";
 import { AppbarState, useAppbarState } from '../../State/Appbar';
 import AppbarButton from './AppbarButton';
@@ -24,8 +25,8 @@ export const Appbar = () => {
 
     return (
         <div className={classNames("appbar", { "hover": appbarState.pinned })}>
-            <AppbarButton text="Pin" icon={FaThumbtack} onClick={handleClickTogglePin} rotate={appbarState.pinned ? "90" : "0" }/>
-            <AppbarButton text="Add" icon={FaRegSquarePlus} onClick={handleClickAdd} />
+            <AppbarButton text="Pin" icon={appbarState.pinned ? BsPinFill : BsPinAngleFill} onClick={handleClickTogglePin} />
+            <AppbarButton text="Add" icon={FaSquarePlus} onClick={handleClickAdd} />
             <AppbarButton text="Download" icon={FaDownload} onClick={handleClickDownload} />
         </div>
     );
