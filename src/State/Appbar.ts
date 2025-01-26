@@ -1,7 +1,15 @@
 import { Dispatch, useMemo, useState } from "react";
 
+export const enum View {
+    MIN = 0,
+    Columns = 0,
+    TopDown = 1,
+    MAX = 1,
+};
+
 export type AppbarState = {
     pinned: boolean;
+    view: View;
 };
 
 export const useAppbarState = (initialState: AppbarState): [AppbarState, AppbarActions] => {
@@ -17,7 +25,7 @@ export class AppbarActions {
         public readonly setState: Dispatch<React.SetStateAction<AppbarState>>
     ) { }
 
-    public setPinned = (pinned: boolean) => this.setState((/* state: AppbarState */) => ({ pinned }));
-    public togglePin = () => this.setState((state: AppbarState) => ({ pinned: !state.pinned }));
-
+    public setPinned = (pinned: boolean) => this.setState((state: AppbarState) => ({ ...state, pinned }));
+    public togglePin = () => this.setState((state: AppbarState) => ({ ...state, pinned: !state.pinned }));
+    public cycleView = () => this.setState((state: AppbarState) => ({ ...state, view: ++state.view > View.MAX ? View.MIN : state.view }));
 };
